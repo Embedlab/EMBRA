@@ -1,11 +1,10 @@
-# Compressed Raspberry image file to use. Currently tested only on the lite version.
+# Compressed Raspberry image file to use.
 IMGXZ=2024-03-15-raspios-bookworm-arm64-lite.img.xz
 
 # Image parameters to be set
-# These can be provided as an .env file that can be automatically sourced by this script
 
 USERNAME="pi" # TODO: changing the default username needs some work, don't change
-USERPASS="test123"
+USERPASS="changeme123"
 
 # By default includes current user's SSH key, can be any other key or multiple keys
 SSHKEYS="$(cat ~/.ssh/id_rsa.pub)"
@@ -17,7 +16,6 @@ NETIP="192.168.8.10"
 NETMASK="255.255.255.0"
 NETGW="192.168.8.1"
 NETMETRIC="999" # needs to be set higher than 100 for default DHCP route to work
-# These could be potentially remade into a single variable to be put into the interfaces file
 
 # Example packages to install
 PKGS="sl"
@@ -26,7 +24,7 @@ PKGS="sl"
 # or the official manual: https://www.raspberrypi.com/documentation/computers/configuration.html#raspi-config-cli
 # You only need to provide the specific command and its arguments, eg. "do_boot_wait 0", without the "sudo raspi-config nonint" part.
 RASPICMDS=()
-RASPICMDS+=("hostname ${APPNAME}-pi")
+RASPICMDS+=("hostname remoterover-pi")
 RASPICMDS+=('do_spi 1')
 RASPICMDS+=('do_i2c 1')
 RASPICMDS+=('do_serial_hw 1')
@@ -35,7 +33,7 @@ RASPICMDS+=('do_change_timezone Europe/Warsaw')
 
 # Extra commands to run. This can do literally anything that can be ran on the actual HW before starting it.
 EXTRACMDS=()
-EXTRACMDS+=("touch ~/.image_created_with_${APPNAME}")
+EXTRACMDS+=("touch ~/.image_created_with_remoterover")
 
 # Define which actions should be ran
 RUN_PREP=1      # Unpack and resize raspberry image
@@ -45,7 +43,8 @@ RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
 RUN_NETWORK=1   # Set a static IP 
 RUN_UPDATE=0    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
-RUN_PKGS=1      # Install packages listed in PKGS
+RUN_PKGS=1      # Install packages listed in PKGS, takes some time
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
 RUN_EXTRA=1     # Run extra commands specified in EXTRACMDS array
-RUN_SHRINK=1      # Shrink image back for faster writing to SD
+RUN_SHRINK=1    # Shrink image back for faster writing to SD
+RUN_CLEANUP=1   # Clean temporary files - kernel, dtb, mountpoints

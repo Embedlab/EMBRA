@@ -6,10 +6,15 @@
 # * sudo with either an interactive shell or root access for temporarily mounting the image
 # * sshpass
 
+# Get options from env file
+source ./env
+# These can be temporarily overwritten here if needed
+
 ##################################
 # No user-serviceable parts below
 
-source ./env
+KERNELFILE=kernel8.img
+DTBFILE=bcm2710-rpi-3-b-plus.dtb
 
 function wait_for_ssh() {
   while ! (sleep 1) | telnet localhost 2222 2>/dev/null | grep -q SSH ; do sleep 1 ; echo -n . ; done
@@ -45,7 +50,7 @@ if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
   BOOT_NEEDED=1
 fi
 
-if [[ "x${QEMU_NEEDED}" == "x1" ]] && [ ! -e kernel8.img -o ! -e bcm2710-rpi-3-b-plus.dtb ]; then
+if [[ "x${QEMU_NEEDED}" == "x1" ]] && [ ! -e $KERNELFILE -o ! -e $DTBFILE ]; then
   BOOT_NEEDED=1
 fi
 
@@ -90,8 +95,8 @@ fi
 if [[ "x${QEMU_NEEDED}" == "x1" ]] && [[ "x${BOOT_NEEDED}" == "x1" ]]; then
   info "Getting kernel and dtb"
   ( set -x
-  cp boot/kernel8.img .
-  cp boot/bcm2710-rpi-3-b-plus.dtb .
+  cp boot/$KERNELFILE .
+  cp boot/$DTBFILE .
   ) || die "Copying kernel/dtb failed"
 fi
 
@@ -162,8 +167,8 @@ fi
 if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
   info "Running QEMU in background..."
   ( set -x
-  qemu-system-aarch64 -machine raspi3b -cpu cortex-a72 -dtb bcm2710-rpi-3-b-plus.dtb \
-  -m 1G -smp 4 -kernel kernel8.img -drive file=${IMG},format=raw -daemonize -display none \
+  qemu-system-aarch64 -machine raspi3b -cpu cortex-a72 -dtb $DTBFILE \
+  -m 1G -smp 4 -kernel $KERNELFILE -drive file=${IMG},format=raw -daemonize -display none \
   -append "rw dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
   -device usb-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22
   ) || die "Runnning QEMU failed"
@@ -223,5 +228,13 @@ if [[ "x${RUN_SHRINK}" == "x1" ]]; then
   actualsize=$(($(fdisk -l $IMG | grep img2 | xargs echo | cut -d' ' -f3)*512))
   ( set -x
   qemu-img resize -f raw --shrink $IMG $actualsize
+  )
+fi
+
+if [[ "x${RUN_CLEANUP}" == "x1" ]]; then
+  info "Cleaning up temp files"
+  ( set -x
+  rm -f $KERNELFILE $DTBFILE
+  rmdir boot root
   )
 fi
