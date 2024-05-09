@@ -42,11 +42,11 @@ APPNAME=remote-rover
 
 IMG=${IMGXZ%.xz}
 
-if [[ "x${RUN_UPDATE}" == "x1" ]] || [[ "x${RUN_PKGS}" == "x1" ]]; then
+if [[ "x${RUN_UPDATE}" == "x1" ]] || [[ "x${RUN_UPGRADE}" == "x1" ]] || [[ "x${RUN_PKGS}" == "x1" ]] || [[ "x${RUN_RASPICONF}" == "x1" ]] || [[ "x${RUN_EXTRA}" == "x1" ]]; then
   QEMU_NEEDED=1
 fi
 
-if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
+if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SPI}" == "x1" ]]; then
   BOOT_NEEDED=1
 fi
 
@@ -54,7 +54,7 @@ if [[ "x${QEMU_NEEDED}" == "x1" ]] && [ ! -e $KERNELFILE -o ! -e $DTBFILE ]; the
   BOOT_NEEDED=1
 fi
 
-if [[ "x${RUN_NETWORK}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]]; then
+if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_NETWORK}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]]; then
   ROOTFS_NEEDED=1
 fi
 
@@ -108,11 +108,25 @@ if [[ "x${RUN_USERSETUP}" == "x1" ]]; then
   ) || die "Setting user password failed"
 fi
 
+if [[ "x${RUN_I2C}" == "x1" ]]; then
+  info "Enabling I2C"
+  ( set -x
+  echo "dtparam=i2c_arm=on # Added by $APPNAME" | sudo tee -a boot/config.txt
+  ) || die "Enabling I2C failed"
+fi
+
+if [[ "x${RUN_SPI}" == "x1" ]]; then
+  info "Enabling SPI"
+  ( set -x
+  echo "dtparam=spi=on # Added by $APPNAME" | sudo tee -a boot/config.txt
+  ) || die "Enabling SPI failed"
+fi
+
 if [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
-  info "enabling SSH"
+  info "Enabling SSH"
   ( set -x
   sudo touch boot/ssh
-  ) || die "enabling SSH failed"
+  ) || die "Enabling SSH failed"
 fi
 
 if [[ "x${BOOT_NEEDED}" == "x1" ]]; then
@@ -131,6 +145,14 @@ if [[ "x${ROOTFS_NEEDED}" == "x1" ]]; then
   )
   ! mountpoint root && die "Mounting root failed!"
 fi
+
+if [[ "x${RUN_I2C}" == "x1" ]]; then
+  info "Adding i2c-dev to default modules"
+  ( set -x
+  echo "i2c-dev" | sudo tee -a root/etc/modules
+  ) || die "Adding i2c-dev to default modules failed"
+fi
+
 
 if [[ "x${RUN_SSHKEYS}" == "x1" ]]; then
   info "Adding a provided SSH key(s) to authorized_keys"
@@ -156,6 +178,14 @@ iface $NETIF inet static
   )
 fi
 
+if [[ "x${RUN_HOSTNAME}" == "x1" ]]; then
+  info "Changing hostname to $RASPIHOST"
+  ( set -x
+  sudo sed -i "s/raspberrypi/${RASPIHOST}/g" root/etc/hostname
+  sudo sed -i "s/raspberrypi/${RASPIHOST}/g" root/etc/hosts
+  ) || die "Changing hostname failed"
+fi
+
 if [[ "x${ROOTFS_NEEDED}" == "x1" ]]; then
   info "Unmounting root"
   ( set -x
@@ -172,7 +202,7 @@ if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
   -append "rw dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
   -device usb-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22
   ) || die "Runnning QEMU failed"
-  
+
   info "Waiting for SSH"
   wait_for_ssh
 fi
@@ -215,6 +245,14 @@ if [[ "x${RUN_EXTRA}" == "x1" ]]; then
   done
   ) || die "Extra commands failed"
 fi
+
+if [[ "x${RUN_NETWORK}" == "x1" ]] && [[ "x${NETDNS}" != "x" ]]; then
+  info "Setting up target DNS settings"
+  ( set -x
+  sshpi "echo nameserver $NETDNS | sudo tee /etc/resolv.conf"
+  )
+fi
+
 
 if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
   info "Shutting down QEMU"
