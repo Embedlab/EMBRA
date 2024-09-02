@@ -19,8 +19,8 @@ NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using D
 NETMETRIC="999"  # needs to be set higher than 100 for default DHCP route to work
 
 # Add a static WLAN network configuration
-SSID="SSID"
-PSK="PASSWORD"
+SSID="CBS-2G"
+PSK="Karolina2137"
 WLAN_NETIF="wlan0"
 WLAN_NETIP="192.168.0.200"
 WLAN_NETMASK="255.255.255.0"
@@ -32,7 +32,7 @@ WLAN_NETMETRIC="100"  # needs to be set higher than 100 for default DHCP route t
 RASPIHOST="rover-pi"
 
 # Example packages to install
-PKGS="i2c-tools spi-tools"
+PKGS="i2c-tools spi-tools netcat-traditional"
 
 # raspi-config commands, see: https://www.thedigitalpictureframe.com/cheat-sheet-raspberry-pi-configuration-settings-terminal-commands/
 # or the official manual: https://www.raspberrypi.com/documentation/computers/configuration.html#raspi-config-cli
@@ -48,8 +48,8 @@ EXTRACMDS+=("touch ~/.image_created_with_remoterover")
 # Define which actions should be ran
 RUN_PREP=1      # Unpack and resize raspberry image
 RUN_USERSETUP=1 # Set user password (USERNAME/USERPASS)
-RUN_I2C=1       # Enable I2C
-RUN_SPI=1       # Enable SPI
+RUN_I2C=0       # Enable I2C
+RUN_SPI=0       # Enable SPI
 RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
 RUN_NETWORK=1   # Set a static IP
@@ -59,7 +59,7 @@ RUN_WLAN_DHCP=1 # Use DHCP for WLAN
 RUN_HOSTNAME=1  # Change hostname
 RUN_UPDATE=0    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
-RUN_PKGS=1      # Install packages listed in PKGS, takes some time
+RUN_PKGS=0      # Install packages listed in PKGS, takes some time
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
 RUN_EXTRA=1     # Run extra commands specified in EXTRACMDS array
 RUN_SHRINK=1    # Shrink image back for faster writing to SD
