@@ -122,6 +122,14 @@ if [[ "x${RUN_SPI}" == "x1" ]]; then
   ) || die "Enabling SPI failed"
 fi
 
+if [[ "x${RUN_SERIAL}" == "x1" ]]; then
+  info "Enabling UART"
+  ( set -x
+  echo "enable_uart=1 # Added by $APPNAME" | sudo tee -a boot/config.txt
+  sudo sed -i 's/console=serial0,115200 //;s/console=ttyS0,115200 //' boot/cmdline.txt
+  ) || die "Enabling UART failed"
+fi
+
 if [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
   info "Enabling SSH"
   ( set -x
