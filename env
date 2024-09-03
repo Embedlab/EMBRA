@@ -1,5 +1,5 @@
 # Compressed Raspberry image file to use.
-IMGXZ=2024-07-04-raspios-bookworm-arm64-lite.img.xz
+IMGXZ=2024-03-15-raspios-bookworm-arm64-lite.img.xz
 
 # Image parameters to be set
 
@@ -12,19 +12,19 @@ export SSHPASS=$USERPASS
 
 # Add a static Ethernet network configuration
 NETIF="eth0:1"
-NETIP="192.168.0.100"
+NETIP="192.168.8.10"
 NETMASK="255.255.255.0"
-NETGW="192.168.0.1"
+NETGW="192.168.8.1"
 NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 NETMETRIC="999"  # needs to be set higher than 100 for default DHCP route to work
 
 # Add a static WLAN network configuration
-SSID="CBS-2G"
-PSK="Karolina2137"
+SSID="SSID"
+PSK="PSK"
 WLAN_NETIF="wlan0"
-WLAN_NETIP="192.168.0.200"
+WLAN_NETIP="192.168.8.20"
 WLAN_NETMASK="255.255.255.0"
-WLAN_NETGW="192.168.0.1"
+WLAN_NETGW="192.168.8.1"
 WLAN_NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 WLAN_NETMETRIC="100"  # needs to be set higher than 100 for default DHCP route to work
 
@@ -48,8 +48,8 @@ EXTRACMDS+=("touch ~/.image_created_with_remoterover")
 # Define which actions should be ran
 RUN_PREP=1      # Unpack and resize raspberry image
 RUN_USERSETUP=1 # Set user password (USERNAME/USERPASS)
-RUN_I2C=0       # Enable I2C
-RUN_SPI=0       # Enable SPI
+RUN_I2C=1       # Enable I2C
+RUN_SPI=1       # Enable SPI
 RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
 RUN_NETWORK=1   # Set a static IP
@@ -59,8 +59,8 @@ RUN_WLAN_DHCP=1 # Use DHCP for WLAN
 RUN_HOSTNAME=1  # Change hostname
 RUN_UPDATE=0    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
-RUN_PKGS=0      # Install packages listed in PKGS, takes some time
+RUN_PKGS=1      # Install packages listed in PKGS, takes some time
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
 RUN_EXTRA=1     # Run extra commands specified in EXTRACMDS array
 RUN_SHRINK=1    # Shrink image back for faster writing to SD
-RUN_CLEANUP=0   # Clean temporary files - kernel, dtb, mountpoints
+RUN_CLEANUP=1   # Clean temporary files - kernel, dtb, mountpoints
