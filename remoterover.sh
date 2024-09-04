@@ -74,7 +74,8 @@ if [[ "x${RUN_PREP}" == "x1" ]]; then
     newsize=$(echo "x=l($oldsize)/l(2); scale=0; 2^((x+1)/1)" | bc -l)
     info "New size determined to be $(($newsize/(1024**3)))GiB"
     ( set -x
-    qemu-img resize -f raw $IMG $newsize
+    # qemu-img resize -f raw $IMG $newsize
+    qemu-img resize -f raw $IMG 16G # Temporary solution
     ) || die "Image resize failed"
   fi
 fi
@@ -207,6 +208,15 @@ if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
   wait_for_ssh
 fi
 
+if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
+  info "Running raspi-config commands"
+  ( set -x
+  for cmd in "${RASPICMDS[@]}"; do
+    sshpi sudo raspi-config nonint $cmd
+  done
+  ) || die "raspi-config failed"
+fi
+
 if [[ "x${RUN_UPDATE}" == "x1" ]]; then
   info "Updating APT"
   ( set -x
@@ -228,13 +238,19 @@ if [[ "x${RUN_PKGS}" == "x1" ]]; then
   ) || die "Installing extra packages failed"
 fi
 
-if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
-  info "Running raspi-config commands"
+if [[ "x${RUN_STM32}" == "x1" ]]; then
+  info "Enabling STM32"
   ( set -x
-  for cmd in "${RASPICMDS[@]}"; do
-    sshpi sudo raspi-config nonint $cmd
-  done
-  ) || die "raspi-config failed"
+  sshpi bash << 'EOF'
+    set -x
+    sudo apt install -y at git ser2net stlink-tools || { echo "Installing dependencies failed"; exit 1; }
+    git clone https://github.com/eosti/remote-stm32.git || { echo "Git clone failed"; exit 1; }
+    cd remote-stm32 || { echo "Failed to enter directory"; exit 1; }
+    sudo ./install.sh || { echo "Installation failed"; exit 1; }
+    cd ..
+    rm -rf remote-stm32
+EOF
+  ) || die "Enabling STM32 failed"
 fi
 
 if [[ "x${RUN_EXTRA}" == "x1" ]]; then

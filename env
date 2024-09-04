@@ -29,6 +29,7 @@ PKGS="i2c-tools spi-tools"
 # You only need to provide the specific command and its arguments, eg. "do_boot_wait 0", without the "sudo raspi-config nonint" part.
 RASPICMDS=()
 RASPICMDS+=('do_change_timezone Europe/Warsaw')          # Set a timezone
+RASPICMDS+=('do_expand_rootfs')          # Set a timezone
 # RASPICMDS+=('do_wifi_ssid_passphrase ssid passphrase') # Set WLAN settings
 
 # Extra commands to run. This can do literally anything that can be ran on the actual HW before starting it.
@@ -47,6 +48,7 @@ RUN_HOSTNAME=1  # Change hostname
 RUN_UPDATE=0    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
 RUN_PKGS=1      # Install packages listed in PKGS, takes some time
+RUN_STM32=1     # Enable STM32 gdb server
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
 RUN_EXTRA=1     # Run extra commands specified in EXTRACMDS array
 RUN_SHRINK=1    # Shrink image back for faster writing to SD
