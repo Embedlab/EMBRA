@@ -74,8 +74,7 @@ if [[ "x${RUN_PREP}" == "x1" ]]; then
     newsize=$(echo "x=l($oldsize)/l(2); scale=0; 2^((x+1)/1)" | bc -l)
     info "New size determined to be $(($newsize/(1024**3)))GiB"
     ( set -x
-    # qemu-img resize -f raw $IMG $newsize
-    qemu-img resize -f raw $IMG 16G # Temporary solution
+    qemu-img resize -f raw $IMG $newsize
     ) || die "Image resize failed"
   fi
 fi
