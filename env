@@ -1,5 +1,5 @@
 # Compressed Raspberry image file to use.
-IMGXZ=2024-07-04-raspios-bookworm-arm64-lite.img.xz
+IMGXZ=2024-03-15-raspios-bookworm-arm64-lite.img.xz
 
 # Image parameters to be set
 
