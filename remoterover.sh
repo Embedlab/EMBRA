@@ -236,6 +236,13 @@ if [[ "x${RUN_PKGS}" == "x1" ]]; then
   ) || die "Installing extra packages failed"
 fi
 
+if [[ "x${RUN_SERIAL}" == "x1" ]]; then
+  info "Installing Minicom"
+  ( set -x
+  sshpi sudo apt-get install -y minicom
+  ) || die "Installing Minicom failed"
+fi
+
 if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
   info "Running raspi-config commands"
   ( set -x
