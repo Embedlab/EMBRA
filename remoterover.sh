@@ -247,6 +247,11 @@ if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
   wait_for_ssh
 fi
 
+info "Resising the root filesystem"
+( set -x
+sshpi sudo resize2fs /dev/mmcblk0p2
+) || die "Resizing failed"
+
 if [[ "x${RUN_UPDATE}" == "x1" ]]; then
   info "Updating APT"
   ( set -x
