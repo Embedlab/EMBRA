@@ -50,6 +50,7 @@ RUN_PREP=1      # Unpack and resize raspberry image
 RUN_USERSETUP=1 # Set user password (USERNAME/USERPASS)
 RUN_I2C=1       # Enable I2C
 RUN_SPI=1       # Enable SPI
+RUN_SERIAL=1    # Enable UART
 RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
 RUN_NETWORK=1   # Set a static IP
