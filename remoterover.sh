@@ -123,6 +123,14 @@ if [[ "x${RUN_SPI}" == "x1" ]]; then
   ) || die "Enabling SPI failed"
 fi
 
+if [[ "x${RUN_SERIAL}" == "x1" ]]; then
+  info "Enabling UART"
+  ( set -x
+  echo "enable_uart=1 # Added by $APPNAME" | sudo tee -a boot/config.txt
+  sudo sed -i 's/console=serial0,115200 //;s/console=ttyS0,115200 //' boot/cmdline.txt
+  ) || die "Enabling UART failed"
+fi
+
 if [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
   info "Enabling SSH"
   ( set -x
@@ -166,17 +174,49 @@ fi
 
 if [[ "x${RUN_NETWORK}" == "x1" ]]; then
   info "Setting up network config"
-  ( set -x
-  IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
-  [[ "x${NETIP}" != x ]] && echo "# Automatically added by $APPNAME
+
+  if [[ "$RUN_ETH" == "1" ]]; then
+    IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
+    (
+      set -x
+      [[ "x${NETIP}" != x ]] && echo "# Automatically added by $APPNAME
 auto $NETIF
 iface $NETIF inet static
-    address $NETIP" | sudo tee $IFCFG
-  [[ "x${NETMASK}" != x ]]  && echo  "    netmask $NETMASK" | sudo tee -a $IFCFG
-  [[ "x${NETGW}" != x ]]    && echo "    gateway $NETGW" | sudo tee -a $IFCFG
-  [[ "x${NETMETRIC}" != x ]]    && echo "    metric $NETMETRIC" | sudo tee -a $IFCFG
-  [[ "x${NETEXTRA}" != x ]] && echo "$NETEXTRA" | sudo tee -a $IFCFG
-  )
+    address $NETIP" | sudo tee -a $IFCFG
+      [[ "x${NETMASK}" != x ]]  && echo "    netmask $NETMASK" | sudo tee -a $IFCFG
+      [[ "x${NETGW}" != x ]]    && echo "    gateway $NETGW" | sudo tee -a $IFCFG
+      [[ "x${NETDNS}" != x ]]   && echo "    dns-nameservers $NETDNS" | sudo tee -a $IFCFG
+      [[ "x${NETMETRIC}" != x ]] && echo "    metric $NETMETRIC" | sudo tee -a $IFCFG
+      [[ "x${NETEXTRA}" != x ]] && echo "$NETEXTRA" | sudo tee -a $IFCFG
+    )
+  fi
+
+  if [[ "$RUN_WLAN" == "1" ]]; then
+    IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
+    (
+      set -x
+      echo "# Automatically added by $APPNAME
+auto $WLAN_NETIF" | sudo tee -a $IFCFG
+
+      if [[ "$RUN_WLAN_DHCP" == "1" ]]; then
+        echo "iface $WLAN_NETIF inet dhcp" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETMETRIC}" != x ]] && echo "    metric $WLAN_NETMETRIC" | sudo tee -a $IFCFG
+        [[ "x${SSID}" != x ]]           && echo "    wpa-ssid $SSID" | sudo tee -a $IFCFG
+        [[ "x${PSK}" != x ]]            && echo "    wpa-psk $PSK" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETEXTRA}" != x ]]  && echo "$WLAN_NETEXTRA" | sudo tee -a $IFCFG
+      else
+        echo "iface $WLAN_NETIF inet static
+    address $WLAN_NETIP" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETMASK}" != x ]]  && echo "    netmask $WLAN_NETMASK" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETGW}" != x ]]    && echo "    gateway $WLAN_NETGW" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETDNS}" != x ]]   && echo "    dns-nameservers $WLAN_NETDNS" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETMETRIC}" != x ]] && echo "    metric $WLAN_NETMETRIC" | sudo tee -a $IFCFG
+        [[ "x${SSID}" != x ]]          && echo "    wpa-ssid $SSID" | sudo tee -a $IFCFG
+        [[ "x${PSK}" != x ]]           && echo "    wpa-psk $PSK" | sudo tee -a $IFCFG
+        [[ "x${WLAN_NETEXTRA}" != x ]] && echo "$WLAN_NETEXTRA" | sudo tee -a $IFCFG
+      fi
+    )
+  fi
 fi
 
 if [[ "x${RUN_HOSTNAME}" == "x1" ]]; then
@@ -236,6 +276,13 @@ if [[ "x${RUN_PKGS}" == "x1" ]]; then
   ( set -x
   sshpi sudo apt-get install -y $PKGS
   ) || die "Installing extra packages failed"
+fi
+
+if [[ "x${RUN_SERIAL}" == "x1" ]]; then
+  info "Installing Minicom"
+  ( set -x
+  sshpi sudo apt-get install -y minicom
+  ) || die "Installing Minicom failed"
 fi
 
 if [[ "x${RUN_STM32}" == "x1" ]]; then

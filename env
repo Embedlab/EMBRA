@@ -10,7 +10,7 @@ USERPASS="changeme123"
 SSHKEYS="$(cat ~/.ssh/id_rsa.pub)"
 export SSHPASS=$USERPASS
 
-# Add a static network configuration
+# Add a static Ethernet network configuration
 NETIF="eth0:1"
 NETIP="192.168.8.10"
 NETMASK="255.255.255.0"
@@ -18,11 +18,21 @@ NETGW="192.168.8.1"
 NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 NETMETRIC="999"  # needs to be set higher than 100 for default DHCP route to work
 
+# Add a static WLAN network configuration
+SSID="SSID"
+PSK="PSK"
+WLAN_NETIF="wlan0"
+WLAN_NETIP="192.168.8.20"
+WLAN_NETMASK="255.255.255.0"
+WLAN_NETGW="192.168.8.1"
+WLAN_NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
+WLAN_NETMETRIC="100"  # needs to be set higher than 100 for default DHCP route to work
+
 # Change hostname
 RASPIHOST="rover-pi"
 
 # Example packages to install
-PKGS="i2c-tools spi-tools"
+PKGS="i2c-tools spi-tools netcat-traditional"
 
 # raspi-config commands, see: https://www.thedigitalpictureframe.com/cheat-sheet-raspberry-pi-configuration-settings-terminal-commands/
 # or the official manual: https://www.raspberrypi.com/documentation/computers/configuration.html#raspi-config-cli
@@ -41,9 +51,13 @@ RUN_PREP=1      # Unpack and resize raspberry image
 RUN_USERSETUP=1 # Set user password (USERNAME/USERPASS)
 RUN_I2C=1       # Enable I2C
 RUN_SPI=1       # Enable SPI
+RUN_SERIAL=1    # Enable UART
 RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
 RUN_NETWORK=1   # Set a static IP
+RUN_ETH=1       # Set up ethernet with a static IP
+RUN_WLAN=1      # Set up Wi-Fi with a static IP
+RUN_WLAN_DHCP=0 # Use DHCP for WLAN
 RUN_HOSTNAME=1  # Change hostname
 RUN_UPDATE=0    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
