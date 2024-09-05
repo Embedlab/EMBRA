@@ -39,7 +39,7 @@ PKGS="i2c-tools spi-tools netcat-traditional"
 # You only need to provide the specific command and its arguments, eg. "do_boot_wait 0", without the "sudo raspi-config nonint" part.
 RASPICMDS=()
 RASPICMDS+=('do_change_timezone Europe/Warsaw')          # Set a timezone
-RASPICMDS+=('do_expand_rootfs')          # Set a timezone
+RASPICMDS+=('do_expand_rootfs')                          # Expand root filesystem
 # RASPICMDS+=('do_wifi_ssid_passphrase ssid passphrase') # Set WLAN settings
 
 # Extra commands to run. This can do literally anything that can be ran on the actual HW before starting it.
