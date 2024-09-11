@@ -256,6 +256,11 @@ if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
   ) || die "raspi-config failed"
 fi
 
+info "Resising the root filesystem"
+( set -x
+sshpi sudo resize2fs /dev/mmcblk0p2
+) || die "Resizing failed"
+
 if [[ "x${RUN_UPDATE}" == "x1" ]]; then
   info "Updating APT"
   ( set -x
