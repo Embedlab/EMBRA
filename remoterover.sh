@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Dependencies:
-# * qemu-system-aarch64
 # * fdisk,  xz-tools
 # * sudo with either an interactive shell or root access for temporarily mounting the image
-# * sshpass
 
 # Get options from env file
 source ./env
