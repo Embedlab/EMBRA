@@ -17,6 +17,15 @@ function die() {
 
 APPNAME=remote-rover
 
+info "Connecting to the internet."
+ping -c 1 8.8.8.8 &> /dev/null
+
+if [[ $? -eq 0 ]]; then
+  info "Connected to the internet."
+else
+  die "Internet cconnection failed"
+fi
+
 if [[ "x${RUN_UPDATE}" == "x1" ]]; then
   info "Updating APT"
   ( set -x

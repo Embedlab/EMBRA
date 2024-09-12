@@ -155,8 +155,8 @@ WorkingDirectory=/home/$USERNAME
 User=$USERNAME
 Group=$USERNAME
 Restart=on-failure
-StandardOutput=journal
-StandardError=journal
+StandardOutput=tty
+StandardError=tty
 
 [Install]
 WantedBy=multi-user.target

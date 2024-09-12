@@ -7,8 +7,8 @@ USERNAME="pi" # TODO: changing the default username needs some work, don't chang
 USERPASS="changeme123"
 
 # By default includes current user's SSH key, can be any other key or multiple keys
-SSHKEYS="$(cat ~/.ssh/id_rsa.pub)"
-export SSHPASS=$USERPASS
+# SSHKEYS="$(cat ~/.ssh/id_rsa.pub)"
+# export SSHPASS=$USERPASS
 
 # Add a static Ethernet network configuration
 NETIF="eth0:1"
