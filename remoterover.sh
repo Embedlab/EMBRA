@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Dependencies:
-# * qemu-system-aarch64
 # * fdisk,  xz-tools
 # * sudo with either an interactive shell or root access for temporarily mounting the image
-# * sshpass
 
 # Get options from env file
 source ./env
@@ -12,18 +10,6 @@ source ./env
 
 ##################################
 # No user-serviceable parts below
-
-KERNELFILE=kernel8.img
-DTBFILE=bcm2710-rpi-3-b-plus.dtb
-
-function wait_for_ssh() {
-  while ! (sleep 1) | telnet localhost 2222 2>/dev/null | grep -q SSH ; do sleep 1 ; echo -n . ; done
-  echo -e "\nSSH is up"
-}
-
-function sshpi(){
-  sshpass -e ssh -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null pi@localhost -p2222 $*
-}
 
 function info() {
   echo -ne "\e[92m"
@@ -41,10 +27,6 @@ function die() {
 APPNAME=remote-rover
 
 IMG=${IMGXZ%.xz}
-
-if [[ "x${RUN_UPDATE}" == "x1" ]] || [[ "x${RUN_UPGRADE}" == "x1" ]] || [[ "x${RUN_PKGS}" == "x1" ]] || [[ "x${RUN_RASPICONF}" == "x1" ]] || [[ "x${RUN_EXTRA}" == "x1" ]]; then
-  QEMU_NEEDED=1
-fi
 
 if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SPI}" == "x1" ]]; then
   BOOT_NEEDED=1
@@ -92,14 +74,6 @@ if [[ "x${BOOT_NEEDED}" == "x1" ]]; then
   ! mountpoint boot && die "Mounting boot failed"
 fi
 
-if [[ "x${QEMU_NEEDED}" == "x1" ]] && [[ "x${BOOT_NEEDED}" == "x1" ]]; then
-  info "Getting kernel and dtb"
-  ( set -x
-  cp boot/$KERNELFILE .
-  cp boot/$DTBFILE .
-  ) || die "Copying kernel/dtb failed"
-fi
-
 if [[ "x${RUN_USERSETUP}" == "x1" ]]; then
   info "Setting user password"
   ( set -x
@@ -141,7 +115,7 @@ if [[ "x${BOOT_NEEDED}" == "x1" ]]; then
   info "Unmounting boot"
   ( set -x
   sudo umount boot
-  ) || "Unmounting boot failed"
+  ) || die "Unmounting boot failed"
   sync
 fi
 
@@ -154,21 +128,51 @@ if [[ "x${ROOTFS_NEEDED}" == "x1" ]]; then
   ! mountpoint root && die "Mounting root failed!"
 fi
 
+if [[ "x${ROOTFS_NEEDED}" == "x1" ]]; then
+
+  IMAGE_MOUNT_POINT="root"
+  SCRIPT_PATH="/home/$USERNAME/localrover.sh"
+  ENV_PATH="$IMAGE_MOUNT_POINT/home/$USERNAME/env"
+  SERVICE_PATH="$IMAGE_MOUNT_POINT/etc/systemd/system/localrover.service"
+
+  info "Copying local script to rootfs"
+  (
+    set -x
+    cp localrover.sh "$IMAGE_MOUNT_POINT"/"$SCRIPT_PATH"
+    cp env "$ENV_PATH"
+    echo "Creating systemd service"
+
+    cat <<EOF | sudo tee "$SERVICE_PATH"
+[Unit]
+Description=Local Rover Script
+After=network.target
+
+[Service]
+ExecStart=$SCRIPT_PATH
+WorkingDirectory=/home/$USERNAME
+User=$USERNAME
+Group=$USERNAME
+Restart=on-failure
+StandardOutput=tty
+StandardError=tty
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    sed -i '${/exit 0/d;}' root/etc/rc.local
+    echo "sudo systemctl daemon-reload && systemctl enable localrover.service" >> root/etc/rc.local
+    echo "sudo systemctl start localrover.service" >> root/etc/rc.local
+    echo "exit 0" >> root/etc/rc.local
+
+    info "Systemd service created and started."
+  ) || die "Copying local script and creating service failed"
+fi
+
 if [[ "x${RUN_I2C}" == "x1" ]]; then
   info "Adding i2c-dev to default modules"
   ( set -x
   echo "i2c-dev" | sudo tee -a root/etc/modules
   ) || die "Adding i2c-dev to default modules failed"
-fi
-
-
-if [[ "x${RUN_SSHKEYS}" == "x1" ]]; then
-  info "Adding a provided SSH key(s) to authorized_keys"
-  ( set -x
-  mkdir -p root/home/$USERNAME/.ssh
-  echo "$SSHKEYS" > root/home/$USERNAME/.ssh/authorized_keys
-  chmod 644 root/home/$USERNAME/.ssh/authorized_keys
-  ) || die "Addding SSH keys failed"
 fi
 
 if [[ "x${RUN_NETWORK}" == "x1" ]]; then
@@ -234,85 +238,6 @@ if [[ "x${ROOTFS_NEEDED}" == "x1" ]]; then
   sync
 fi
 
-if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
-  info "Running QEMU in background..."
-  ( set -x
-  qemu-system-aarch64 -machine raspi3b -cpu cortex-a72 -dtb $DTBFILE \
-  -m 1G -smp 4 -kernel $KERNELFILE -drive file=${IMG},format=raw -daemonize -display none \
-  -append "rw dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
-  -device usb-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22
-  ) || die "Runnning QEMU failed"
-
-  info "Waiting for SSH"
-  wait_for_ssh
-fi
-
-info "Resising the root filesystem"
-( set -x
-sshpi sudo resize2fs /dev/mmcblk0p2
-) || die "Resizing failed"
-
-if [[ "x${RUN_UPDATE}" == "x1" ]]; then
-  info "Updating APT"
-  ( set -x
-  sshpi sudo apt-get update
-  ) || die "Updating APT failed"
-fi
-
-if [[ "x${RUN_UPGRADE}" == "x1" ]]; then
-  info "Updating system"
-  ( set -x
-  sshpi sudo apt-get upgrade -y
-  ) || die "Updating system failed"
-fi
-
-if [[ "x${RUN_PKGS}" == "x1" ]]; then
-  info "Installing extra packages ($(echo $PKGS | xargs | sed 's/ /, /g'))"
-  ( set -x
-  sshpi sudo apt-get install -y $PKGS
-  ) || die "Installing extra packages failed"
-fi
-
-if [[ "x${RUN_SERIAL}" == "x1" ]]; then
-  info "Installing Minicom"
-  ( set -x
-  sshpi sudo apt-get install -y minicom
-  ) || die "Installing Minicom failed"
-fi
-
-if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
-  info "Running raspi-config commands"
-  ( set -x
-  for cmd in "${RASPICMDS[@]}"; do
-    sshpi sudo raspi-config nonint $cmd
-  done
-  ) || die "raspi-config failed"
-fi
-
-if [[ "x${RUN_EXTRA}" == "x1" ]]; then
-  info "Running extra commands"
-  ( set -x
-  for cmd in "${EXTRACMDS[@]}"; do
-    sshpi $cmd
-  done
-  ) || die "Extra commands failed"
-fi
-
-if [[ "x${RUN_NETWORK}" == "x1" ]] && [[ "x${NETDNS}" != "x" ]]; then
-  info "Setting up target DNS settings"
-  ( set -x
-  sshpi "echo nameserver $NETDNS | sudo tee /etc/resolv.conf"
-  )
-fi
-
-
-if [[ "x${QEMU_NEEDED}" == "x1" ]]; then
-  info "Shutting down QEMU"
-  ( set -x
-  sshpi "sudo shutdown -h now"
-  )
-fi
-
 if [[ "x${RUN_SHRINK}" == "x1" ]]; then
   info "Shrinking image back"
   actualsize=$(($(fdisk -l $IMG | grep img2 | xargs echo | cut -d' ' -f3)*512))
@@ -324,7 +249,6 @@ fi
 if [[ "x${RUN_CLEANUP}" == "x1" ]]; then
   info "Cleaning up temp files"
   ( set -x
-  rm -f $KERNELFILE $DTBFILE
   rmdir boot root
   )
 fi

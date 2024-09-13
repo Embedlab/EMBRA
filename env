@@ -7,8 +7,8 @@ USERNAME="pi" # TODO: changing the default username needs some work, don't chang
 USERPASS="changeme123"
 
 # By default includes current user's SSH key, can be any other key or multiple keys
-SSHKEYS="$(cat ~/.ssh/id_rsa.pub)"
-export SSHPASS=$USERPASS
+# SSHKEYS="$(cat ~/.ssh/id_rsa.pub)"
+# export SSHPASS=$USERPASS
 
 # Add a static Ethernet network configuration
 NETIF="eth0:1"
@@ -43,7 +43,7 @@ RASPICMDS+=('do_change_timezone Europe/Warsaw')          # Set a timezone
 
 # Extra commands to run. This can do literally anything that can be ran on the actual HW before starting it.
 EXTRACMDS=()
-EXTRACMDS+=("touch ~/.image_created_with_remoterover")
+EXTRACMDS+=("touch /home/$USERNAME/.image_created_with_remoterover")
 
 # Define which actions should be ran
 RUN_PREP=1      # Unpack and resize raspberry image
@@ -58,7 +58,7 @@ RUN_ETH=1       # Set up ethernet with a static IP
 RUN_WLAN=1      # Set up Wi-Fi with a static IP
 RUN_WLAN_DHCP=0 # Use DHCP for WLAN
 RUN_HOSTNAME=1  # Change hostname
-RUN_UPDATE=0    # Update package index, takes some time
+RUN_UPDATE=1    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
 RUN_PKGS=1      # Install packages listed in PKGS, takes some time
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
