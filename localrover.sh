@@ -66,6 +66,17 @@ if [[ "x${RUN_STM32}" == "x1" ]]; then
   ) || die "Enabling STM32 failed"
 fi
 
+if [[ "x${RUN_RELAY}" == "x1" ]]; then
+  info "Enabling Waveshare RPi Relay Board"
+  ( set -x
+    git clone https://github.com/WiringPi/WiringPi
+    cd WiringPi
+    ./build  
+    cd ..
+    rm -rf WiringPi
+  ) || die "Enabling Waveshare RPi Relay Board failed"
+fi
+
 if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
   info "Running raspi-config commands"
   ( set -x
