@@ -1,5 +1,5 @@
 # Compressed Raspberry image file to use.
-IMGXZ=2024-03-15-raspios-bookworm-arm64-lite.img.xz
+IMGXZ=2024-07-04-raspios-bookworm-arm64-lite.img.xz
 
 # Image parameters to be set
 
@@ -12,9 +12,9 @@ USERPASS="changeme123"
 
 # Add a static Ethernet network configuration
 NETIF="eth0:1"
-NETIP="192.168.8.10"
+NETIP="192.168.0.100"
 NETMASK="255.255.255.0"
-NETGW="192.168.8.1"
+NETGW="192.168.0.1"
 NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 NETMETRIC="999"  # needs to be set higher than 100 for default DHCP route to work
 
@@ -55,12 +55,13 @@ RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
 RUN_NETWORK=1   # Set a static IP
 RUN_ETH=1       # Set up ethernet with a static IP
-RUN_WLAN=1      # Set up Wi-Fi with a static IP
+RUN_WLAN=0      # Set up Wi-Fi with a static IP
 RUN_WLAN_DHCP=0 # Use DHCP for WLAN
 RUN_HOSTNAME=1  # Change hostname
 RUN_UPDATE=1    # Update package index, takes some time
 RUN_UPGRADE=0   # Update the OS, takes a long time
 RUN_PKGS=1      # Install packages listed in PKGS, takes some time
+RUN_STM32=1     # Enable STM32 gdb server
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
 RUN_EXTRA=1     # Run extra commands specified in EXTRACMDS array
 RUN_SHRINK=1    # Shrink image back for faster writing to SD
