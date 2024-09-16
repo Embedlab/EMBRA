@@ -178,7 +178,7 @@ fi
 if [[ "x${RUN_RELAY}" == "x1" ]]; then
   info "Adding relay script to home directory"
   ( set -x
-  cp relay.sh root/home/$USERNAME
+  cp relay.sh root/usr/local/bin/set_relay
   ) || die "Adding relay script failed"
 fi
 
