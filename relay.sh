@@ -57,6 +57,11 @@ else
  exit
 fi
 
+# Unexport if already exported
+if [ -d "/sys/class/gpio/gpio$ch" ]; then
+  echo $ch > /sys/class/gpio/unexport
+fi
+
 echo $ch > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio$ch/direction
 echo $state > /sys/class/gpio/gpio$ch/value
