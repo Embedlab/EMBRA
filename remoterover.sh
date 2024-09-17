@@ -175,6 +175,13 @@ if [[ "x${RUN_I2C}" == "x1" ]]; then
   ) || die "Adding i2c-dev to default modules failed"
 fi
 
+if [[ "x${RUN_RELAY}" == "x1" ]]; then
+  info "Adding relay script to home directory"
+  ( set -x
+  cp relay.sh root/usr/local/bin/set_relay
+  ) || die "Adding relay script failed"
+fi
+
 if [[ "x${RUN_NETWORK}" == "x1" ]]; then
   info "Setting up network config"
 
