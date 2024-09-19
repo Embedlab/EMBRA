@@ -104,6 +104,13 @@ if [[ "x${RUN_SERIAL}" == "x1" ]]; then
   ) || die "Enabling UART failed"
 fi
 
+if [[ "x${RUN_CAMERA}" == "x1" ]]; then
+  info "Enabling camera"
+  ( set -x
+  echo "gpu_mem=128 # Added by $APPNAME" | sudo tee -a boot/config.txt
+  ) || die "Enabling camera failed"
+fi
+
 if [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
   info "Enabling SSH"
   ( set -x
@@ -180,6 +187,13 @@ if [[ "x${RUN_RELAY}" == "x1" ]]; then
   ( set -x
   cp relay.sh root/usr/local/bin/set_relay
   ) || die "Adding relay script failed"
+fi
+
+if [[ "x${RUN_CAMERA}" == "x1" ]]; then
+  info "Adding camera streamer service to home directory"
+  ( set -x
+  cp camera-streamer-raspi-v2-8MP.service root/etc/systemd/system/camera-streamer.service
+  ) || die "Adding camera streamer service failed"
 fi
 
 if [[ "x${RUN_NETWORK}" == "x1" ]]; then
