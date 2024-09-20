@@ -102,6 +102,32 @@ To exchange data on a specific SPI device using `spi-pipe`, use:
 
 For more information on `spi-pipe` refer to [this page](https://manpages.debian.org/testing/spi-tools/spi-pipe.1.en.html)
 
+### UART communication feature
+**Description:**  
+This feature provides UART communication between the Raspberry Pi and external serial devices. UART is commonly used for serial data transmission between the Pi and peripherals such as GPS modules, sensors, or other microcontrollers.
+
+**Hardware:**  
+Connect to UART-compatible devices using the following GPIO pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/uart)):  
+- **GPIO 14 (TXD)** for Transmit  
+- **GPIO 15 (RXD)** for Receive  
+
+Ensure the voltage levels of the UART device match those of the Raspberry Pi (3.3V logic levels).
+
+**Usage:**  
+To communicate with a serial device via UART, you can use `minicom`.  
+1. Install `minicom` if not already installed:  
+```bash
+   sudo apt-get install minicom
+```
+2. Start minicom with the correct serial port (e.g., /dev/serial0 for UART on Raspberry Pi):
+```bash
+   sudo minicom -b 9600 -o -D /dev/serial0
+```
+- -b 9600 sets the baud rate to 9600 (adjust as needed).
+- -D /dev/serial0 specifies the UART device.
+
+For more advanced options, refer to the Minicom manpage.
+
 ## Troubleshooting
 During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
    ```bash
