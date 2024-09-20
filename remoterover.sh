@@ -32,12 +32,12 @@ if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ 
   BOOT_NEEDED=1
 fi
 
-if [[ "x${QEMU_NEEDED}" == "x1" ]] && [ ! -e $KERNELFILE -o ! -e $DTBFILE ]; then
-  BOOT_NEEDED=1
+if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_NETWORK}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+  ROOTFS_NEEDED=1
 fi
 
-if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_NETWORK}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]]; then
-  ROOTFS_NEEDED=1
+if [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+  RUN_I2C=1
 fi
 
 if [[ "x${RUN_PREP}" == "x1" ]]; then
@@ -194,6 +194,14 @@ if [[ "x${RUN_CAMERA}" == "x1" ]]; then
   ( set -x
   cp camera-streamer-raspi-v2-8MP.service root/etc/systemd/system/camera-streamer.service
   ) || die "Adding camera streamer service failed"
+fi
+
+if [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+  info "Copying Power Monitor HAT files"
+  ( set -x
+  cp power_monitor.py root/home/$USERNAME/.power_monitor.py
+  cp power_monitor.sh root/usr/local/bin/power_monitor
+  ) || die "Copying Power Monitor HAT files failed"
 fi
 
 if [[ "x${RUN_NETWORK}" == "x1" ]]; then

@@ -69,6 +69,7 @@ fi
 if [[ "x${RUN_RELAY}" == "x1" ]]; then
   info "Enabling Waveshare RPi Relay Board"
   ( set -x
+    sudo apt install -y git
     git clone https://github.com/WiringPi/WiringPi
     cd WiringPi
     ./build  
@@ -91,6 +92,14 @@ if [[ "x${RUN_CAMERA}" == "x1" ]]; then
     cd ..
     rm -rf camera-streamer
   ) || die "Enabling remote camera"
+fi
+
+if [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+  info "Enabling Power Monitor HAT"
+  ( set -x
+    sudo apt install -y python3-pip
+    sudo pip3 install --break-system-packages adafruit-circuitpython-ina219
+  ) || die "Enabling Power Monitor HAT failed"
 fi
 
 if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
