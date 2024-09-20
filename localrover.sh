@@ -77,6 +77,22 @@ if [[ "x${RUN_RELAY}" == "x1" ]]; then
   ) || die "Enabling Waveshare RPi Relay Board failed"
 fi
 
+if [[ "x${RUN_CAMERA}" == "x1" ]]; then
+  info "Enabling remote camera"
+  ( set -x
+    sudo apt install -y git
+    git clone https://github.com/ayufan-research/camera-streamer.git --recursive
+    sudo apt install -y libavformat-dev libavutil-dev libavcodec-dev libcamera-dev liblivemedia-dev v4l-utils pkg-config xxd build-essential cmake libssl-dev
+    cd camera-streamer/
+    make
+    sudo make install 
+    sudo systemctl enable /etc/systemd/system/camera-streamer.service
+    sudo systemctl start camera-streamer.service
+    cd ..
+    rm -rf camera-streamer
+  ) || die "Enabling remote camera"
+fi
+
 if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
   info "Running raspi-config commands"
   ( set -x
