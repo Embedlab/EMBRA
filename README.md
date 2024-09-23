@@ -23,50 +23,26 @@ Before using this project, ensure the following prerequisites are met:
      - Choose and download the **Raspberry Pi OS Lite** version (32-bit).
    - This image is a minimal version, providing a lightweight OS suitable for headless setups.
 
-
 ## Basic Usage
 
 1. **Download the repository**  
    Clone or download the repository to your local machine.
 
-2. **Copy and configure the RPi OS Image**  
-   - Copy the Raspberry Pi OS image into the repository folder.
-   - Set the `IMGXZ` variable in the `env` file to the full name of the image file.
+2. **Prepare the RPi OS Image**  
+   Copy the Raspberry Pi OS image into the repository folder and set the `IMGXZ` variable in the `env` file to the full image file name.
 
-3. **Configure host, user, and login details**  
-   Edit the `env` file with your specific information:
-   - Set `RASPIHOST` to name the host.
-   - Set `USERNAME` to define the user.
-   - Set `USERPASS` to define the password for the user.
+3. **Configure system details**  
+   In the `env` file:
+   - Set `RASPIHOST`, `USERNAME`, and `USERPASS` to define the host name, user, and password.
 
-4. **Configure network settings**  
-   a. **Static Ethernet network configuration**  
-      - Set `RUN_ETH=1` to configure Ethernet with a static IP.
-      - Set `NETIP` to the static IP address.
-      - Set `NETMASK` to the appropriate subnet mask.
-      - Set `NETGW` to the default gateway.
+4. **Network settings**  
+   In the `env` file:
+   - **Ethernet (static IP):** Set `RUN_ETH=1`, `NETIP`, `NETMASK`, and `NETGW` for static IP configuration.
+   - **WLAN:** Set `RUN_WLAN_DHCP=1` for DHCP or `RUN_WLAN=1` for a static IP. Specify `SSID` (Wi-Fi name), `PSK` (password), and static IP details (`WLAN_NETIP`, `WLAN_NETMASK`, `WLAN_NETGW`) if using static addresses.
+
+5. **Enable features for the image**  
+   Set the necessary `RUN_*` variables to 1 in the `env` file to enable specific features, for example: `RUN_I2C` for I2C communication support or `RUN_CAMERA`  to have a live view with Raspberry Pi Camera ( see details below). 
    
-   b. **Static or dynamic WLAN network configuration**  
-      - Set `RUN_WLAN_DHCP=1` to use DHCP for Wi-Fi.  
-      OR  
-      - Set `RUN_WLAN=1` to configure Wi-Fi with a static IP.
-      - Set `SSID` to the name of the Wi-Fi network.
-      - Set `PSK` to the Wi-Fi network password.
-      - If using static IP addresses:
-        - Set `WLAN_NETIP` to the desired IP address.
-        - Set `WLAN_NETMASK` to the subnet mask.
-        - Set `WLAN_NETGW` to the default gateway.
-
-5. **Configure features for the image**  
-   In the `env` file, enable the required features by setting the corresponding `RUN_*` variables:
-   - Set `RUN_I2C=1` to enable I2C.
-   - Set `RUN_SPI=1` to enable SPI.
-   - Set `RUN_SERIAL=1` to enable UART.
-   - Set `RUN_STM32=1` to enable the STM32 GDB server.
-   - Set `RUN_CAMERA=1` to enable the Raspberry Pi Camera.
-   - Set `RUN_CURRENT_MONITOR=1` to enable the Power Monitor HAT.
-   - Set `RUN_RELAY=1` to enable the Waveshare Raspberry Pi Relay Board.
-
 6. **Generate the image**  
    Run the following command to generate the custom Raspberry Pi OS image:
 
