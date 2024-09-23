@@ -1,5 +1,28 @@
 # RemoteRover
- RemoteRover: Your plug and pray platform for seamless remote access.
+A versatile platform for remote access and support, tailored for Raspberry Pi hardware. It automates the configuration of RPi OS, network interfaces, and communication protocols (SPI/I2C/Ethernet), while supporting extensions for power management and real-time monitoring. With optional camera integration, it offers live video streaming, making it perfect for seamless remote operations.
+
+## Prerequisites
+
+Before using this project, ensure the following prerequisites are met:
+
+### 1. Linux or WSL (Windows Subsystem for Linux)
+   - This script is designed to run on a Linux system. If you're using Windows, install and configure [WSL](https://docs.microsoft.com/en-us/windows/wsl/install) to run Linux commands.
+
+### 2. Required Packages
+   - Install the necessary packages by running the following commands:
+
+   ```bash
+   sudo apt update
+   sudo apt install fdisk xz-utils sudo qemu-utils bc openssl coreutils grep sed systemd
+   ```
+   These packages are essential for handling the RPI image, mounting partitions, and automating configurations.
+
+### 3. Raspberry Pi OS Image
+   - Download the Raspberry Pi OS Lite image:
+     - Go to the official Raspberry Pi website: [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit)
+     - Choose and download the **Raspberry Pi OS Lite** version (32-bit).
+   - This image is a minimal version, providing a lightweight OS suitable for headless setups.
+
 
 ## Usage
 * Download a raspberry pi image in .xz format and place it in the same directory as `env` and `remoterover.sh`
