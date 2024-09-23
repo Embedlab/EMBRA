@@ -55,15 +55,52 @@ Before using this project, ensure the following prerequisites are met:
    - Select "Use custom" when choosing the image to write, and select the generated image.
 
 
-## Using extra default interfaces:
-Make sure `RUN_I2C` and/or `RUN_SPI` are enabled if you want those interfaces to be auto-configured.
+## Feature Usage
 
-### I²C (I2C, IIC)
-Use `i2cdetect -y 1` to scan for external I2C devices.
+### I2C
+**Description:**  
+This feature provides I2C communication with external devices as a master. The Raspberry Pi acts as the master and communicates with I2C slave devices.
 
-`i2cset` and `i2cget` can be used to write/read data to/from I2C devices.
+**Hardware:**  
+- No specific hardware is required.
+- Connect to I2C slave devices using the following GPIO pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/i2c)):
+  - **GPIO 2 (SDA)** for Data
+  - **GPIO 3 (SCL)** for Clock
+
+**Usage:**  
+- To scan for external I2C devices, use:  
+  ```bash
+  i2cdetect -y 1
+  ```
+- To write data to an I2C device, use:  
+  ```bash
+  i2cset -y 1 <device_address> <register> <data>
+  ```
+- To read data from an I2C device, use:  
+  ```bash
+  i2cget -y 1 <device_address> <register>
+  ```
+
 ### SPI
-You can use `spi-pipe` to test SPI comms.
+**Description:**  
+This feature provides SPI communication with external devices as a master. The Raspberry Pi communicates with SPI slave devices.
+
+**Hardware:**  
+- No specific hardware is required.
+- Connect to SPI slave devices using the SPI0 or SPI1 pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/spi)).
+
+**Usage:**  
+- To write data to a specific SPI device using `spi-pipe`, use:  
+  ```bash
+  echo -n "data" | spi-pipe --spi /dev/spidev0.0
+  ```
+
+- For more information on `spi-pipe`, use:  
+  ```bash
+  spi-pipe -h
+  ```
+  or refer to [this page](https://manpages.debian.org/testing/spi-tools/spi-pipe.1.en.html)
+
 
 ## Troubleshooting
 If for some reason one or more of the commands fail, check if variables you modified are sane first.
