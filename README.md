@@ -39,6 +39,8 @@ Before using this project, ensure the following prerequisites are met:
    In the `env` file:
    - **Ethernet (static IP):** Set `RUN_ETH=1`, `NETIP`, `NETMASK`, and `NETGW` for static IP configuration.
    - **WLAN:** Set `RUN_WLAN_DHCP=1` for DHCP or `RUN_WLAN=1` for a static IP. Specify `SSID` (Wi-Fi name), `PSK` (password), and static IP details (`WLAN_NETIP`, `WLAN_NETMASK`, `WLAN_NETGW`) if using static addresses.
+  Please note that a network connection is required for the proper setup of the RPi OS image, so ensure that the network settings are correctly configured as described above.
+
 
 5. **Enable features for the image**  
    Set the necessary `RUN_*` variables to 1 in the `env` file to enable specific features, for example: `RUN_I2C` for I2C communication support or `RUN_CAMERA`  to have a live view with Raspberry Pi Camera ( see details below). 
@@ -53,6 +55,14 @@ Before using this project, ensure the following prerequisites are met:
 7. **Write the generated image to an SD Card**
    - Download and use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to write the generated image to an SD card.
    - Select "Use custom" when choosing the image to write, and select the generated image.
+
+8. **Plug and play (or pray :) )**  
+   - During startup, all required packages and features will be installed and configured.
+   - Check if your tools have been installed properly by running:
+   ```bash
+   ls ~/localrover.sh
+   ```
+   If the file exists, it means the setup did not execute correctly, and you will need to run it manually. Refer to the Troubleshooting section for details. 
 
 
 ## Feature Usage
@@ -90,15 +100,14 @@ To exchange data on a specific SPI device using `spi-pipe`, use:
   echo -n "data" | spi-pipe --spi /dev/spidev0.0
 ```
 
-For more information on `spi-pipe`, use refer to [this page](https://manpages.debian.org/testing/spi-tools/spi-pipe.1.en.html)
-
+For more information on `spi-pipe` refer to [this page](https://manpages.debian.org/testing/spi-tools/spi-pipe.1.en.html)
 
 ## Troubleshooting
-If for some reason one or more of the commands fail, check if variables you modified are sane first.
+During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
+   ```bash
+   ~/localrover.sh
+   ```
 
-Some raspi-config commands might don't work as expected when ran in qemu, such as enabling I2C or SPI.\
-If that's the case, you can use EXTRACMDS to apply your changes manually.
-
-Then, depending on where the execution failed, you might encounter a few issues when trying to run the script again:
-* Qemu might still be running: Kill qemu-system-aarch64 manually
-* One of the partitions might still be mounted: Check if any of the partitions are still mounted on root/ and boot/, if so, unmount them
+### Known reasons for failure:
+- Lack of Internet access
+- Interruption during the startup phase
