@@ -6,22 +6,22 @@ A versatile platform for remote access and support, tailored for Raspberry Pi ha
 Before using this project, ensure the following prerequisites are met:
 
 1. **Linux or WSL (Windows Subsystem for Linux) OS available**
-   - This script is designed to run on a Linux system. If you're using Windows, install and configure [WSL](https://docs.microsoft.com/en-us/windows/wsl/install) to run Linux commands.
 
 2. **Required Packages**
-   - Install the necessary packages by running the following commands:
+   Install the necessary packages by running the following commands:
 
    ```bash
    sudo apt update
    sudo apt install fdisk xz-utils sudo qemu-utils bc openssl coreutils grep sed systemd
    ```
-   These packages are essential for handling the RPI image, mounting partitions, and automating configurations.
 
 3. **Raspberry Pi OS Image**
-   - Download the Raspberry Pi OS Lite image:
-     - Go to the official Raspberry Pi website: [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit)
-     - Choose and download the **Raspberry Pi OS Lite** version (32-bit).
-   - This image is a minimal version, providing a lightweight OS suitable for headless setups.
+   Download the Raspberry Pi OS Lite image:
+  - Go to the official Raspberry Pi website: [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit)
+  - Choose and download the **Raspberry Pi OS Lite** version (32-bit).
+
+4. **Raspberry Pi board**  
+   This script has been tested on the Raspberry Pi 4, but it should also work with other Raspberry Pi versions.
 
 ## Basic Usage
 
