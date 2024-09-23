@@ -57,49 +57,40 @@ Before using this project, ensure the following prerequisites are met:
 
 ## Feature Usage
 
-### I2C
+### I2C communication feature
 **Description:**  
 This feature provides I2C communication with external devices as a master. The Raspberry Pi acts as the master and communicates with I2C slave devices.
 
 **Hardware:**  
-- No specific hardware is required.
-- Connect to I2C slave devices using the following GPIO pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/i2c)):
-  - **GPIO 2 (SDA)** for Data
-  - **GPIO 3 (SCL)** for Clock
+No specific hardware is required.
+Connect to I2C slave devices using the following GPIO pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/i2c)): **GPIO 2 (SDA)** for Data and **GPIO 3 (SCL)** for Clock.
 
 **Usage:**  
-- To scan for external I2C devices, use:  
-  ```bash
+To scan/write and read from external I2C devices, use:  
+```bash
+  # Scan: 
   i2cdetect -y 1
-  ```
-- To write data to an I2C device, use:  
-  ```bash
+  # Write:
   i2cset -y 1 <device_address> <register> <data>
-  ```
-- To read data from an I2C device, use:  
-  ```bash
+  # Read: 
   i2cget -y 1 <device_address> <register>
-  ```
+```
 
-### SPI
+### SPI communication feature
 **Description:**  
 This feature provides SPI communication with external devices as a master. The Raspberry Pi communicates with SPI slave devices.
 
 **Hardware:**  
-- No specific hardware is required.
-- Connect to SPI slave devices using the SPI0 or SPI1 pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/spi)).
+No specific hardware is required.
+Connect to SPI slave devices using the SPI0 or SPI1 pins (as per [Raspberry Pi Pinout](https://pinout.xyz/pinout/spi)).
 
 **Usage:**  
-- To write data to a specific SPI device using `spi-pipe`, use:  
-  ```bash
+To exchange data on a specific SPI device using `spi-pipe`, use:  
+```bash
   echo -n "data" | spi-pipe --spi /dev/spidev0.0
-  ```
+```
 
-- For more information on `spi-pipe`, use:  
-  ```bash
-  spi-pipe -h
-  ```
-  or refer to [this page](https://manpages.debian.org/testing/spi-tools/spi-pipe.1.en.html)
+For more information on `spi-pipe`, use refer to [this page](https://manpages.debian.org/testing/spi-tools/spi-pipe.1.en.html)
 
 
 ## Troubleshooting
