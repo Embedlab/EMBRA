@@ -5,10 +5,10 @@ A versatile platform for remote access and support, tailored for Raspberry Pi ha
 
 Before using this project, ensure the following prerequisites are met:
 
-### 1. Linux or WSL (Windows Subsystem for Linux)
+1. **Linux or WSL (Windows Subsystem for Linux) OS available**
    - This script is designed to run on a Linux system. If you're using Windows, install and configure [WSL](https://docs.microsoft.com/en-us/windows/wsl/install) to run Linux commands.
 
-### 2. Required Packages
+2. **Required Packages**
    - Install the necessary packages by running the following commands:
 
    ```bash
@@ -17,7 +17,7 @@ Before using this project, ensure the following prerequisites are met:
    ```
    These packages are essential for handling the RPI image, mounting partitions, and automating configurations.
 
-### 3. Raspberry Pi OS Image
+3. **Raspberry Pi OS Image**
    - Download the Raspberry Pi OS Lite image:
      - Go to the official Raspberry Pi website: [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit)
      - Choose and download the **Raspberry Pi OS Lite** version (32-bit).
@@ -42,7 +42,7 @@ Before using this project, ensure the following prerequisites are met:
 
 5. **Enable features for the image**  
    Set the necessary `RUN_*` variables to 1 in the `env` file to enable specific features, for example: `RUN_I2C` for I2C communication support or `RUN_CAMERA`  to have a live view with Raspberry Pi Camera ( see details below). 
-   
+
 6. **Generate the image**  
    Run the following command to generate the custom Raspberry Pi OS image:
 
