@@ -24,19 +24,60 @@ Before using this project, ensure the following prerequisites are met:
    - This image is a minimal version, providing a lightweight OS suitable for headless setups.
 
 
-## Usage
-* Download a raspberry pi image in .xz format and place it in the same directory as `env` and `remoterover.sh`
-* Change settings in `env` file according to your needs:
-  * Check if the image file name corresponds to the one you've just downloaded
-  * Take note of the user password (changing the default user name is not supported yet)
-  * By default the script copies your SSH public key (`~/.ssh/id_rsa.pub`) to `~/.ssh/authorized_keys` to make passwordless login possible.\
-  Feel free to change the key, add multiple ones or to disable this functionality
-  * `NET*` variables can be used to set a static IP for eth0 or WLAN interface.\
-  To set up a WLAN interface, a `raspi-config nonint` command can be used (`RASPICMDS`) - more info can be found in the env file above raspi-config commands settings
-  * `PKGS` are packages that will be automatically installed using apt-get. Enable `RUN_UPDATE` and/or `RUN_UPGRADE` to update the repository and/or upgrade your system before installing them.
-  * `EXTRACMDS` are non-filtered commands ran in straight in the raspberry shell - you can do anything you want with them, as long as there aren't any issues with command escaping :)
-  * Actions to run are defined by `RUN_*` variables on the bottom of the file. Set the variable to 0 or comment out to disable running it.
-* If you're happy with the settings provided by `env` file, just run `remoterover.sh` and wait for it to finish. Your image (`.img`) should be ready to write to SD card.
+## Basic Usage
+
+1. **Download the repository**  
+   Clone or download the repository to your local machine.
+
+2. **Copy and configure the RPi OS Image**  
+   - Copy the Raspberry Pi OS image into the repository folder.
+   - Set the `IMGXZ` variable in the `env` file to the full name of the image file.
+
+3. **Configure host, user, and login details**  
+   Edit the `env` file with your specific information:
+   - Set `RASPIHOST` to name the host.
+   - Set `USERNAME` to define the user.
+   - Set `USERPASS` to define the password for the user.
+
+4. **Configure network settings**  
+   a. **Static Ethernet network configuration**  
+      - Set `RUN_ETH=1` to configure Ethernet with a static IP.
+      - Set `NETIP` to the static IP address.
+      - Set `NETMASK` to the appropriate subnet mask.
+      - Set `NETGW` to the default gateway.
+   
+   b. **Static or dynamic WLAN network configuration**  
+      - Set `RUN_WLAN_DHCP=1` to use DHCP for Wi-Fi.  
+      OR  
+      - Set `RUN_WLAN=1` to configure Wi-Fi with a static IP.
+      - Set `SSID` to the name of the Wi-Fi network.
+      - Set `PSK` to the Wi-Fi network password.
+      - If using static IP addresses:
+        - Set `WLAN_NETIP` to the desired IP address.
+        - Set `WLAN_NETMASK` to the subnet mask.
+        - Set `WLAN_NETGW` to the default gateway.
+
+5. **Configure features for the image**  
+   In the `env` file, enable the required features by setting the corresponding `RUN_*` variables:
+   - Set `RUN_I2C=1` to enable I2C.
+   - Set `RUN_SPI=1` to enable SPI.
+   - Set `RUN_SERIAL=1` to enable UART.
+   - Set `RUN_STM32=1` to enable the STM32 GDB server.
+   - Set `RUN_CAMERA=1` to enable the Raspberry Pi Camera.
+   - Set `RUN_CURRENT_MONITOR=1` to enable the Power Monitor HAT.
+   - Set `RUN_RELAY=1` to enable the Waveshare Raspberry Pi Relay Board.
+
+6. **Generate the image**  
+   Run the following command to generate the custom Raspberry Pi OS image:
+
+   ```bash
+   sudo ./remoterover.sh
+   ```
+
+7. **Write the generated image to an SD Card**
+   - Download and use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to write the generated image to an SD card.
+   - Select "Use custom" when choosing the image to write, and select the generated image.
+
 
 ## Using extra default interfaces:
 Make sure `RUN_I2C` and/or `RUN_SPI` are enabled if you want those interfaces to be auto-configured.
