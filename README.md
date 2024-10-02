@@ -200,22 +200,59 @@ This feature allows monitoring of power consumption using the Power Monitor HAT 
 To monitor power on the INA219 channels, use the provided Bash script as follows:
 
 - **Monitor a specific channel**:  
-  Run the script with the desired channel (CH1, CH2, or CH3) to display power data for that channel:
+Run the script with the desired channel (CH1, CH2, or CH3) to display power data for that channel:
 ```bash
    power_monitor CH1
 ```
-- Monitor all channels:
+- **Monitor all channels**:  
 If no argument is provided, the script will display data for all available channels:
 ```bash
    power_monitor
 ```
-- Help:
+- **Help**:  
 To view the usage instructions:
 ```bash
    power_monitor -h
 ```
 
 For more information please refer to [this page](https://github.com/sbcshop/Power-Monitor-HAT)
+
+### Waveshare Raspberry Pi Relay Board feature
+**Description:**  
+This feature controls relays on the Waveshare Relay Board connected to the Raspberry Pi. The relays can be switched on or off, allowing for control of external devices.
+
+**Hardware:**  
+Waveshare Raspberry Pi Relay Board.
+
+**Usage:**  
+To control the relays, use the provided Bash script as follows:
+
+- **Turn on a relay**:  
+  Specify the channel (CH1, CH2, or CH3) and set the state to `ON`:
+```bash
+  set_relay CH1 ON
+```
+- **Turn off a relay**:  
+Specify the channel and set the state to OFF:
+```bash
+  set_relay CH1 OFF
+```
+- **Help**:  
+To display usage instructions:
+```bash
+  set_relay -h
+```
+
+**Relay Contacts**:
+
+![Relay contacts](./docs/relay.gif)
+
+- NO (Normally Open):  
+The contact is open when the relay is off and closes when the relay is on.
+- NC (Normally Closed):  
+The contact is closed when the relay is off and opens when the relay is on.
+
+For more information please refer to [this page](https://www.waveshare.com/wiki/RPi_Relay_Board)
 
 ## Troubleshooting
 During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
