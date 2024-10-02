@@ -115,11 +115,8 @@ Ensure the voltage levels of the UART device match those of the Raspberry Pi (3.
 
 **Usage:**  
 To communicate with a serial device via UART, you can use `minicom`.  
-1. Install `minicom` if not already installed:  
-```bash
-   sudo apt-get install minicom
-```
-2. Start minicom with the correct serial port (e.g., /dev/serial0 for UART on Raspberry Pi):
+
+Start minicom with the correct serial port (/dev/serial0 or /dev/AMA0 depending on Raspberry Pi model):
 ```bash
    sudo minicom -b 9600 -o -D /dev/serial0
 ```
@@ -127,6 +124,54 @@ To communicate with a serial device via UART, you can use `minicom`.
 - -D /dev/serial0 specifies the UART device.
 
 For more advanced options, refer to the Minicom manpage.
+
+### STM32 GDB Server feature
+**Description:**  
+This feature allows remote debugging of STM32 microcontrollers using a GDB server. It is commonly used to debug firmware on STM32 devices from an IDE like STM32CubeIDE through a remote setup.
+
+**Hardware:**  
+An STM32 development board with ST-LINK debugger, and network access to the Raspberry Pi running the GDB server.
+
+**Usage:**  
+
+#### Debugging
+
+1. Open STM32CubeIDE and navigate to **Run > Debug Configurations**.
+
+2. Create a new GDB Hardware Debugging configuration by right-clicking on **GDB Hardware Debugging** and selecting **New Configuration**.
+
+3. In the **Debugger** tab, configure the following:
+    * Set **GDB Command** to `arm-none-eabi-gdb`.
+    * Check the **Remote Target** box.
+    * Select **ST-LINK (ST-LINK GDB Server)** for the **JTAG Device**.
+    * Enter the Host IP and port (default port: 4242) of the GDB server running on the Raspberry Pi.
+
+4. Click **Apply**, then click the **Debug** button. Once debugging starts, you can immediately close the session if you only wanted to apply the configuration.
+
+5. To begin debugging later, use the drop-down next to the debug button and select the new configuration.
+
+#### UART/Serial
+
+To access the UART interface through STM32CubeIDE:
+
+1. While in the **Debug** perspective, open the console tab and select **Open Console > Command Shell Console**.
+
+2. In the **Select Remote Configuration** window, choose **Telnet** as the connection type, with UTF-8 encoding.
+
+3. Enter the host IP of the Raspberry Pi and port 8686 to connect to the UART interface.
+
+4. Confirm the connection, and you should see a message in the console indicating the successful connection to the UART.
+
+To disconnect, use the red **N** button in the console window.
+
+Alternatively, use a terminal:
+```bash
+   telnet myraspberrypi.local 8686
+```
+
+This connects directly to the Raspberry Pi on port 8686. You should see serial connection details and can now interact with the UART interface on the STM32 device.
+
+For more information please refer to [this page](https://github.com/eosti/remote-stm32/blob/master/client.md?plain=1)
 
 ## Troubleshooting
 During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
