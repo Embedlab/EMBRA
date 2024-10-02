@@ -189,6 +189,34 @@ To start or configure the stream, use the `camera streamer` tool on your Raspber
 
 If additional configuration or troubleshooting is needed, check the `camera streamer` documentation or modify the server settings to adjust resolution, frame rate, or other stream parameters.
 
+### Power Monitor HAT feature
+**Description:**  
+This feature allows monitoring of power consumption using the Power Monitor HAT from SB Components. The HAT uses INA219 sensors to measure voltage, current, and power on up to three different channels.
+
+**Hardware:**  
+[Power Monitor HAT from SB Components.](https://shop.sb-components.co.uk/collections/raspberry-pi-new-release/products/power-monitoring-hat)
+
+**Usage:**  
+To monitor power on the INA219 channels, use the provided Bash script as follows:
+
+- **Monitor a specific channel**:  
+  Run the script with the desired channel (CH1, CH2, or CH3) to display power data for that channel:
+```bash
+   power_monitor CH1
+```
+- Monitor all channels:
+If no argument is provided, the script will display data for all available channels:
+```bash
+   power_monitor
+```
+- Help:
+To view the usage instructions:
+```bash
+   power_monitor -h
+```
+
+For more information please refer to [this page](https://github.com/sbcshop/Power-Monitor-HAT)
+
 ## Troubleshooting
 During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
    ```bash
