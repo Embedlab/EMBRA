@@ -166,12 +166,28 @@ To disconnect, use the red **N** button in the console window.
 
 Alternatively, use a terminal:
 ```bash
-   telnet myraspberrypi.local 8686
+   telnet myraspberrypihostname.local 8686
 ```
 
 This connects directly to the Raspberry Pi on port 8686. You should see serial connection details and can now interact with the UART interface on the STM32 device.
 
 For more information please refer to [this page](https://github.com/eosti/remote-stm32/blob/master/client.md?plain=1)
+
+### Pi Camera streaming feature
+**Description:**  
+This feature streams video from the Raspberry Pi Camera Module over the network. The stream can be accessed using any browser or media player capable of handling network streams.
+
+**Hardware:**  
+A Raspberry Pi with an attached Camera Module v2.
+
+**Usage:**  
+The video stream is provided using **camera streamer** and can be accessed via the following URL:  
+
+https://myraspberrypihostname.local:8080/stream
+
+To start or configure the stream, use the `camera streamer` tool on your Raspberry Pi. 
+
+If additional configuration or troubleshooting is needed, check the `camera streamer` documentation or modify the server settings to adjust resolution, frame rate, or other stream parameters.
 
 ## Troubleshooting
 During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
