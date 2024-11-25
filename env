@@ -32,6 +32,11 @@ WLAN_NETGW="$STATIC_WLAN_GW"
 WLAN_NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 WLAN_NETMETRIC="100"  # needs to be set higher than 100 for default DHCP route to work
 
+# CAN settings
+
+CAN_BITRATE="1000000"
+CAN_DBITRATE="8000000"
+
 # Change hostname
 RASPIHOST="rover-pi"
 
@@ -67,6 +72,7 @@ RUN_UPGRADE=0   # Update the OS, takes a long time
 RUN_PKGS=1      # Install packages listed in PKGS, takes some time
 RUN_STM32=1     # Enable STM32 gdb server
 RUN_CAMERA=1    # Enable remote camera
+RUN_CAN=1       # Enable CAN-BUS HAT by SEEED STUDIO
 RUN_CURRENT_MONITOR=1   # Enable Power Monitor HAT
 RUN_RASPICONF=1 # Run raspi-config commands specified in RASPICMDS array
 RUN_RELAY=1     # Enable Waveshare RPi Relay Board

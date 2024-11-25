@@ -28,7 +28,7 @@ APPNAME=remote-rover
 
 IMG=${IMGXZ%.xz}
 
-if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SPI}" == "x1" ]]; then
+if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SPI}" == "x1" ]] || [[ "x${RUN_CAN}" == "x1" ]]; then
   BOOT_NEEDED=1
 fi
 
@@ -109,6 +109,13 @@ if [[ "x${RUN_CAMERA}" == "x1" ]]; then
   ( set -x
   echo "gpu_mem=128 # Added by $APPNAME" | sudo tee -a boot/config.txt
   ) || die "Enabling camera failed"
+fi
+
+if [[ "x${RUN_CAN}" == "x1" ]]; then
+  info "Enabling CAN bus"
+  ( set -x
+  echo "dtoverlay=seeed-can-fd-hat-v2" | sudo tee -a boot/config.txt
+  ) || die "Enabling CAN bus failed"
 fi
 
 if [[ "x${RUN_ENABLESSH}" == "x1" ]]; then
