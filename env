@@ -1,5 +1,9 @@
+# Import file with local variables
+
+source ./local_env
+
 # Compressed Raspberry image file to use.
-IMGXZ=2024-03-15-raspios-bookworm-arm64-lite.img.xz
+IMGXZ=$IMAGE
 
 # Image parameters to be set
 
@@ -12,19 +16,19 @@ USERPASS="changeme123"
 
 # Add a static Ethernet network configuration
 NETIF="eth0:1"
-NETIP="192.168.8.10"
-NETMASK="255.255.255.0"
-NETGW="192.168.8.1"
+NETIP="$STATIC_ETH_IP"
+NETMASK="$STATIC_ETH_NETMASK"
+NETGW="$STATIC_ETH_GW"
 NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 NETMETRIC="999"  # needs to be set higher than 100 for default DHCP route to work
 
 # Add a static WLAN network configuration
-SSID="SSID"
-PSK="PSK"
+SSID="$SSID"
+PSK="$PSK"
 WLAN_NETIF="wlan0"
-WLAN_NETIP="192.168.8.20"
-WLAN_NETMASK="255.255.255.0"
-WLAN_NETGW="192.168.8.1"
+WLAN_NETIP="$STATIC_WLAN_IP"
+WLAN_NETMASK="$STATIC_WLAN_NETMASK"
+WLAN_NETGW="$STATIC_WLAN_GW"
 WLAN_NETDNS="1.1.1.1" # DNS server for target network, might be needed if not using DHCP
 WLAN_NETMETRIC="100"  # needs to be set higher than 100 for default DHCP route to work
 

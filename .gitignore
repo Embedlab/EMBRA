@@ -3,3 +3,4 @@ bcm*
 kernel*
 boot
 root
+local_env
