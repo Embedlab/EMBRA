@@ -255,15 +255,15 @@ The contact is closed when the relay is off and opens when the relay is on.
 For more information please refer to [this page](https://www.waveshare.com/wiki/RPi_Relay_Board)
 
 ### SEEED STUDIOS CAN-BUS (FD) HAT for Raspberry Pi
-**Description:**
+**Description:**  
 A CAN BUS shield for Raspberry Pi, it has 2 channel CAN BUS I/O, supports CAN FD for much faster transmission speed(up to 8Mbps).
 
 Also it has two On-board 120Ω terminating resistors which are controlled by the switches.
 
-**Hardware:**
+**Hardware:**  
 SEEED STUDIOS CAN-BUS (FD) HAT for Raspberry Pi
 
-**Usage:**
+**Usage:**  
 Set the can fd protocol, and the dbitrate can be set to 8M speed (default setting below, you can change it to your own liking).
 
 ```bash
