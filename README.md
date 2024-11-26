@@ -254,6 +254,41 @@ The contact is closed when the relay is off and opens when the relay is on.
 
 For more information please refer to [this page](https://www.waveshare.com/wiki/RPi_Relay_Board)
 
+### SEEED STUDIOS CAN-BUS (FD) HAT for Raspberry Pi
+**Description:**
+A CAN BUS shield for Raspberry Pi, it has 2 channel CAN BUS I/O, supports CAN FD for much faster transmission speed(up to 8Mbps).
+
+Also it has two On-board 120Ω terminating resistors which are controlled by the switches.
+
+**Hardware:**
+SEEED STUDIOS CAN-BUS (FD) HAT for Raspberry Pi
+
+**Usage:**
+Set the can fd protocol, and the dbitrate can be set to 8M speed (default setting below, you can change it to your own liking).
+
+```bash
+sudo ip link set can0 up type can bitrate 1000000   dbitrate 8000000 restart-ms 1000 berr-reporting on fd on
+sudo ip link set can1 up type can bitrate 1000000   dbitrate 8000000 restart-ms 1000 berr-reporting on fd on
+
+sudo ifconfig can0 txqueuelen 65536
+sudo ifconfig can1 txqueuelen 65536
+```
+
+**Testing connection:**
+
+Open two terminal windows and enter the following commands in each window to test can fd protocol.
+```bash
+#send data
+cangen can0 -mv 
+
+#dump data
+candump can0
+```
+
+You can test the CAN-BUS by connecting two channels by itself using jumpers: 0_L <===> 1_L, 0_H <===> 1_H.
+
+For more information please refer to [this page](https://wiki.seeedstudio.com/2-Channel-CAN-BUS-FD-Shield-for-Raspberry-Pi/?spm=a2g0o.detail.1000023.1.7de7Ql56Ql56Tw)
+
 ## Troubleshooting
 During the startup of the RPi OS, the script may fail. If this happens, the files required for setup will not be deleted from the system. After fixing the issue, you can run the setup manually using the appropriate command.
    ```bash
