@@ -102,6 +102,17 @@ if [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
   ) || die "Enabling Power Monitor HAT failed"
 fi
 
+if [[ "x${RUN_CAN}" == "x1" ]]; then
+  info "Enabling CAN bus"
+  ( set -x
+    sudo apt install -y can-utils
+    sudo ip link set can0 up type can bitrate $CAN_BITRATE   dbitrate $CAN_DBITRATE restart-ms 1000 berr-reporting on fd on
+    sudo ip link set can1 up type can bitrate $CAN_BITRATE   dbitrate $CAN_DBITRATE restart-ms 1000 berr-reporting on fd on
+    sudo ifconfig can0 txqueuelen 65536
+    sudo ifconfig can1 txqueuelen 65536
+  ) || die "Enabling CAN bus failed"
+fi
+
 if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
   info "Running raspi-config commands"
   ( set -x
