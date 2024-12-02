@@ -173,11 +173,7 @@ StandardError=tty
 [Install]
 WantedBy=multi-user.target
 EOF
-    sed -i '${/exit 0/d;}' root/etc/rc.local
-    echo "sudo systemctl daemon-reload && systemctl enable localrover.service" >> root/etc/rc.local
-    echo "sudo systemctl start localrover.service" >> root/etc/rc.local
-    echo "exit 0" >> root/etc/rc.local
-
+    sudo systemctl --root=root enable localrover.service
     info "Systemd service created and started."
   ) || die "Copying local script and creating service failed"
 fi
