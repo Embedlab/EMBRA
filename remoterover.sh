@@ -32,7 +32,7 @@ if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ 
   BOOT_NEEDED=1
 fi
 
-if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_WLAN}" == "x1" ]] || [[ "x${RUN_ETH}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
   ROOTFS_NEEDED=1
 fi
 

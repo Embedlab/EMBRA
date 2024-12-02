@@ -41,7 +41,7 @@ CAN_DBITRATE="8000000"
 RASPIHOST="rover-pi"
 
 # Example packages to install
-PKGS="i2c-tools spi-tools netcat-traditional"
+PKGS="i2c-tools spi-tools netcat-traditional git ifupdown"
 
 # raspi-config commands, see: https://www.thedigitalpictureframe.com/cheat-sheet-raspberry-pi-configuration-settings-terminal-commands/
 # or the official manual: https://www.raspberrypi.com/documentation/computers/configuration.html#raspi-config-cli
