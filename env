@@ -41,7 +41,7 @@ CAN_DBITRATE="8000000"
 RASPIHOST="rover-pi"
 
 # Example packages to install
-PKGS="i2c-tools spi-tools netcat-traditional"
+PKGS="i2c-tools spi-tools netcat-traditional git ifupdown"
 
 # raspi-config commands, see: https://www.thedigitalpictureframe.com/cheat-sheet-raspberry-pi-configuration-settings-terminal-commands/
 # or the official manual: https://www.raspberrypi.com/documentation/computers/configuration.html#raspi-config-cli
@@ -62,7 +62,6 @@ RUN_SPI=1       # Enable SPI
 RUN_SERIAL=1    # Enable UART
 RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
-RUN_NETWORK=1   # Set a static IP
 RUN_ETH=1       # Set up ethernet with a static IP
 RUN_WLAN=1      # Set up Wi-Fi with a static IP
 RUN_WLAN_DHCP=0 # Use DHCP for WLAN

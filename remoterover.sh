@@ -32,7 +32,7 @@ if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ 
   BOOT_NEEDED=1
 fi
 
-if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_NETWORK}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_WLAN}" == "x1" ]] || [[ "x${RUN_ETH}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
   ROOTFS_NEEDED=1
 fi
 
@@ -173,11 +173,7 @@ StandardError=tty
 [Install]
 WantedBy=multi-user.target
 EOF
-    sed -i '${/exit 0/d;}' root/etc/rc.local
-    echo "sudo systemctl daemon-reload && systemctl enable localrover.service" >> root/etc/rc.local
-    echo "sudo systemctl start localrover.service" >> root/etc/rc.local
-    echo "exit 0" >> root/etc/rc.local
-
+    sudo systemctl --root=root enable localrover.service
     info "Systemd service created and started."
   ) || die "Copying local script and creating service failed"
 fi
@@ -211,51 +207,71 @@ if [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
   ) || die "Copying Power Monitor HAT files failed"
 fi
 
-if [[ "x${RUN_NETWORK}" == "x1" ]]; then
-  info "Setting up network config"
+if [[ "$RUN_ETH" == "1" ]]; then
+  info "Setting up ethernet config"
+  IFCFG_DIR="root/etc/network/interfaces.d/"
+  IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
 
-  if [[ "$RUN_ETH" == "1" ]]; then
-    IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
-    (
-      set -x
-      [[ "x${NETIP}" != x ]] && echo "# Automatically added by $APPNAME
+    if [ -f "$IFCFG" ]; then
+    echo "$IFCFG exists."
+  else
+    echo "$IFCFG doesn't exist. Creating..."
+    sudo mkdir "$IFCFG_DIR"
+    sudo touch "$IFCFG"
+    echo "$IFCFG created."
+  fi
+
+  (
+    set -x
+    [[ "x${NETIP}" != x ]] && echo "# Automatically added by $APPNAME
 auto $NETIF
 iface $NETIF inet static
-    address $NETIP" | sudo tee -a $IFCFG
-      [[ "x${NETMASK}" != x ]]  && echo "    netmask $NETMASK" | sudo tee -a $IFCFG
-      [[ "x${NETGW}" != x ]]    && echo "    gateway $NETGW" | sudo tee -a $IFCFG
-      [[ "x${NETDNS}" != x ]]   && echo "    dns-nameservers $NETDNS" | sudo tee -a $IFCFG
-      [[ "x${NETMETRIC}" != x ]] && echo "    metric $NETMETRIC" | sudo tee -a $IFCFG
-      [[ "x${NETEXTRA}" != x ]] && echo "$NETEXTRA" | sudo tee -a $IFCFG
-    )
+  address $NETIP" | sudo tee -a $IFCFG
+    [[ "x${NETMASK}" != x ]]  && echo "    netmask $NETMASK" | sudo tee -a $IFCFG
+    [[ "x${NETGW}" != x ]]    && echo "    gateway $NETGW" | sudo tee -a $IFCFG
+    [[ "x${NETDNS}" != x ]]   && echo "    dns-nameservers $NETDNS" | sudo tee -a $IFCFG
+    [[ "x${NETMETRIC}" != x ]] && echo "    metric $NETMETRIC" | sudo tee -a $IFCFG
+    [[ "x${NETEXTRA}" != x ]] && echo "$NETEXTRA" | sudo tee -a $IFCFG
+  )
+fi
+
+if [[ "$RUN_WLAN" == "1" ]]; then
+  info "Setting up wlan config"
+  IFCFG_DIR="root/etc/network/interfaces.d/"
+  IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
+
+    if [ -f "$IFCFG" ]; then
+    echo "$IFCFG exists."
+  else
+    echo "$IFCFG doesn't exist. Creating..."
+    sudo mkdir "$IFCFG_DIR"
+    sudo touch "$IFCFG"
+    echo "$IFCFG created."
   fi
 
-  if [[ "$RUN_WLAN" == "1" ]]; then
-    IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
-    (
-      set -x
-      echo "# Automatically added by $APPNAME
+  (
+    set -x
+    echo "# Automatically added by $APPNAME
 auto $WLAN_NETIF" | sudo tee -a $IFCFG
 
-      if [[ "$RUN_WLAN_DHCP" == "1" ]]; then
-        echo "iface $WLAN_NETIF inet dhcp" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETMETRIC}" != x ]] && echo "    metric $WLAN_NETMETRIC" | sudo tee -a $IFCFG
-        [[ "x${SSID}" != x ]]           && echo "    wpa-ssid $SSID" | sudo tee -a $IFCFG
-        [[ "x${PSK}" != x ]]            && echo "    wpa-psk $PSK" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETEXTRA}" != x ]]  && echo "$WLAN_NETEXTRA" | sudo tee -a $IFCFG
-      else
-        echo "iface $WLAN_NETIF inet static
-    address $WLAN_NETIP" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETMASK}" != x ]]  && echo "    netmask $WLAN_NETMASK" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETGW}" != x ]]    && echo "    gateway $WLAN_NETGW" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETDNS}" != x ]]   && echo "    dns-nameservers $WLAN_NETDNS" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETMETRIC}" != x ]] && echo "    metric $WLAN_NETMETRIC" | sudo tee -a $IFCFG
-        [[ "x${SSID}" != x ]]          && echo "    wpa-ssid $SSID" | sudo tee -a $IFCFG
-        [[ "x${PSK}" != x ]]           && echo "    wpa-psk $PSK" | sudo tee -a $IFCFG
-        [[ "x${WLAN_NETEXTRA}" != x ]] && echo "$WLAN_NETEXTRA" | sudo tee -a $IFCFG
-      fi
-    )
-  fi
+    if [[ "$RUN_WLAN_DHCP" == "1" ]]; then
+      echo "iface $WLAN_NETIF inet dhcp" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETMETRIC}" != x ]] && echo "    metric $WLAN_NETMETRIC" | sudo tee -a $IFCFG
+      [[ "x${SSID}" != x ]]           && echo "    wpa-ssid $SSID" | sudo tee -a $IFCFG
+      [[ "x${PSK}" != x ]]            && echo "    wpa-psk $PSK" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETEXTRA}" != x ]]  && echo "$WLAN_NETEXTRA" | sudo tee -a $IFCFG
+    else
+      echo "iface $WLAN_NETIF inet static
+  address $WLAN_NETIP" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETMASK}" != x ]]  && echo "    netmask $WLAN_NETMASK" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETGW}" != x ]]    && echo "    gateway $WLAN_NETGW" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETDNS}" != x ]]   && echo "    dns-nameservers $WLAN_NETDNS" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETMETRIC}" != x ]] && echo "    metric $WLAN_NETMETRIC" | sudo tee -a $IFCFG
+      [[ "x${SSID}" != x ]]          && echo "    wpa-ssid $SSID" | sudo tee -a $IFCFG
+      [[ "x${PSK}" != x ]]           && echo "    wpa-psk $PSK" | sudo tee -a $IFCFG
+      [[ "x${WLAN_NETEXTRA}" != x ]] && echo "$WLAN_NETEXTRA" | sudo tee -a $IFCFG
+    fi
+  )
 fi
 
 if [[ "x${RUN_HOSTNAME}" == "x1" ]]; then

@@ -47,6 +47,19 @@ if [[ "x${RUN_PKGS}" == "x1" ]]; then
   ) || die "Installing extra packages failed"
 fi
 
+if [[ "$RUN_ETH" == "1" ]]; then
+  info "Setting up static Ethernet"
+  sudo ifconfig eth0 down
+  sudo ifconfig eth0 up
+fi
+
+if [[ "$RUN_WLAN" == "1" ]]; then
+  info "Setting up static Wlan"
+  sudo raspi-config nonint do_wifi_country PL # we can add variable for that
+  sudo rfkill unblock wifi
+  sudo ifconfig wlan0 up
+fi
+
 if [[ "x${RUN_SERIAL}" == "x1" ]]; then
   info "Installing Minicom"
   ( set -x
@@ -141,3 +154,7 @@ fi
 sudo rm -f /home/$USERNAME/localrover.sh /home/$USERNAME/env /etc/systemd/system/localrover.service
 sudo sed -i '/sudo systemctl daemon-reload && systemctl enable localrover.service/d' /etc/rc.local
 sudo sed -i '/sudo systemctl start localrover.service/d' /etc/rc.local
+
+if [[ "$RUN_WLAN" == "1" ]]; then
+  sudo reboot now
+fi
