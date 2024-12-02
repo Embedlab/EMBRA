@@ -62,7 +62,6 @@ RUN_SPI=1       # Enable SPI
 RUN_SERIAL=1    # Enable UART
 RUN_ENABLESSH=1 # Enable SSH by default
 RUN_SSHKEYS=1   # Copy SSKEYS to authorized_keys
-RUN_NETWORK=1   # Set a static IP
 RUN_ETH=1       # Set up ethernet with a static IP
 RUN_WLAN=1      # Set up Wi-Fi with a static IP
 RUN_WLAN_DHCP=0 # Use DHCP for WLAN
