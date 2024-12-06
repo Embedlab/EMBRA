@@ -274,6 +274,39 @@ auto $WLAN_NETIF" | sudo tee -a $IFCFG
   )
 fi
 
+if [[ "$RUN_CAN" == "1" ]]; then
+  info "Setting up CAN config"
+  IFCFG_DIR="root/etc/network/interfaces.d/"
+  IFCFG="root/etc/network/interfaces.d/${APPNAME}.conf"
+
+  if [ -f "$IFCFG" ]; then
+    echo "$IFCFG exists."
+  else
+    echo "$IFCFG doesn't exist. Creating..."
+    sudo mkdir -p "$IFCFG_DIR"
+    sudo touch "$IFCFG"
+    echo "$IFCFG created."
+  fi
+
+  (
+    set -x
+    echo "# Automatically added by $APPNAME
+# Configuration for CAN interfaces" | sudo tee -a $IFCFG
+
+    echo "auto can0
+iface can0 inet manual
+    pre-up /sbin/ip link set can0 up type can bitrate $CAN_BITRATE dbitrate $CAN_DBITRATE restart-ms 1000 berr-reporting on fd on
+    post-up /sbin/ifconfig can0 txqueuelen 65536
+    down /sbin/ip link set can0 down" | sudo tee -a $IFCFG
+
+    echo "auto can1
+iface can1 inet manual
+    pre-up /sbin/ip link set can1 up type can bitrate $CAN_BITRATE dbitrate $CAN_DBITRATE restart-ms 1000 berr-reporting on fd on
+    post-up /sbin/ifconfig can1 txqueuelen 65536
+    down /sbin/ip link set can1 down" | sudo tee -a $IFCFG
+  )
+fi
+
 if [[ "x${RUN_HOSTNAME}" == "x1" ]]; then
   info "Changing hostname to $RASPIHOST"
   ( set -x
