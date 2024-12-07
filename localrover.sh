@@ -135,6 +135,9 @@ if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
   ) || die "raspi-config failed"
 fi
 
+sudo apt install python3-opencv python3-picamera2
+sudo pip3 install -r requirements.txt --break-system-packages
+
 if [[ "x${RUN_EXTRA}" == "x1" ]]; then
   info "Running extra commands"
   ( set -x

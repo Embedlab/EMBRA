@@ -178,6 +178,9 @@ EOF
   ) || die "Copying local script and creating service failed"
 fi
 
+cp data_logging.py root/home/pi/
+cp requirements.txt root/home/pi/
+
 if [[ "x${RUN_I2C}" == "x1" ]]; then
   info "Adding i2c-dev to default modules"
   ( set -x
