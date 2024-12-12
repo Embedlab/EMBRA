@@ -55,6 +55,7 @@ EXTRACMDS=()
 EXTRACMDS+=("touch /home/$USERNAME/.image_created_with_remoterover")
 
 # Define which actions should be ran
+RUN_LOGGING=1   # Enable Logging App
 RUN_PREP=1      # Unpack and resize raspberry image
 RUN_USERSETUP=1 # Set user password (USERNAME/USERPASS)
 RUN_I2C=1       # Enable I2C
