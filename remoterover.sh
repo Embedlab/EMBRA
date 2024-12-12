@@ -49,16 +49,6 @@ if [[ "x${RUN_PREP}" == "x1" ]]; then
   else
     echo "Already unpacked. If you want to redo the whole setup, remove the .img file or set FORCE=1"
   fi
-
-  oldsize=$(stat --printf="%s" $IMG)
-  if factor $oldsize | cut -d: -f2  | grep -qE "[^2 ]"; then
-    info "Resizing image to a power of 2 size, needed by qemu"
-    newsize=$(echo "x=l($oldsize)/l(2); scale=0; 2^((x+1)/1)" | bc -l)
-    info "New size determined to be $(($newsize/(1024**3)))GiB"
-    ( set -x
-    qemu-img resize -f raw $IMG $newsize
-    ) || die "Image resize failed"
-  fi
 fi
 
 parts="$(fdisk -l $IMG)"
