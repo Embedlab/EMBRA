@@ -34,7 +34,7 @@ relay_gpio_map = {
 
 # Global variables to control data collection
 collecting_data = False
-csv_dir = "csv"
+csv_dir = "/home/pi/csv"
 
 # Ensure the csv directory exists
 if not os.path.exists(csv_dir):

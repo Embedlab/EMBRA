@@ -136,11 +136,14 @@ if [[ "x${RUN_RASPICONF}" == "x1" ]]; then
 fi
 
 if [[ "x${RUN_LOGGING}" == "x1" ]]; then
-  info "Running extra commands"
+  info "Enabling logging"
   ( set -x
     sudo apt install -y python3-opencv python3-picamera2
+    sudo pip3 install python-can Flask --break-system-packages
     sudo pip3 install -r requirements.txt --break-system-packages
-  ) || die "Extra commands failed"
+    sudo systemctl enable /etc/systemd/system/data_logging.service
+    sudo systemctl start data_logging.service
+  ) || die "Enabling logging failed"
 fi
 
 if [[ "x${RUN_EXTRA}" == "x1" ]]; then

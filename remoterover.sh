@@ -168,8 +168,14 @@ EOF
   ) || die "Copying local script and creating service failed"
 fi
 
-cp data_logging.py root/home/pi/
-cp requirements.txt root/home/pi/
+if [[ "x${RUN_LOGGING}" == "x1" ]]; then
+  info "Adding logging files"
+  ( set -x
+    cp data_logging.py root/home/pi/.data_logging.py
+    cp requirements.txt root/home/pi/
+    cp services/data_logging.service root/etc/systemd/system/
+  ) || die "Addinglogging files failed"
+fi
 
 if [[ "x${RUN_I2C}" == "x1" ]]; then
   info "Adding i2c-dev to default modules"
@@ -188,7 +194,7 @@ fi
 if [[ "x${RUN_CAMERA}" == "x1" ]]; then
   info "Adding camera streamer service to home directory"
   ( set -x
-  cp camera-streamer-raspi-v2-8MP.service root/etc/systemd/system/camera-streamer.service
+  cp services/camera-streamer-raspi-v2-8MP.service root/etc/systemd/system/camera-streamer.service
   ) || die "Adding camera streamer service failed"
 fi
 

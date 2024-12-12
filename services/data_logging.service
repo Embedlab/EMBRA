@@ -1,0 +1,10 @@
+[Unit]
+Description=Data Logging Script
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/.data_logging.py
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
