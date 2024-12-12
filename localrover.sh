@@ -162,7 +162,7 @@ if [[ "x${RUN_NETWORK}" == "x1" ]] && [[ "x${NETDNS}" != "x" ]]; then
   ) || die "Setting up DNS failed"
 fi
 
-sudo rm -f /home/$USERNAME/localrover.sh /home/$USERNAME/env /etc/systemd/system/localrover.service
+sudo rm -f /home/$USERNAME/localrover.sh /home/$USERNAME/env /etc/systemd/system/localrover.service /home/$USERNAME/requirements.txt
 sudo sed -i '/sudo systemctl daemon-reload && systemctl enable localrover.service/d' /etc/rc.local
 sudo sed -i '/sudo systemctl start localrover.service/d' /etc/rc.local
 
