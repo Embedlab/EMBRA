@@ -35,6 +35,7 @@ relay_gpio_map = {
 # Global variables to control data collection
 collecting_data = False
 csv_dir = "/home/pi/csv"
+current_dir = None
 
 # Ensure the csv directory exists
 if not os.path.exists(csv_dir):
@@ -60,15 +61,15 @@ ina3.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 ina3.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 ina3.bus_voltage_range = BusVoltageRange.RANGE_16V
 
-def collect_data():
+def collect_data(current_dir):
     global collecting_data
     csv_files = {
-        1: open(os.path.join(csv_dir, "channel_1.csv"), mode='a', newline=''),
-        2: open(os.path.join(csv_dir, "channel_2.csv"), mode='a', newline=''),
-        3: open(os.path.join(csv_dir, "channel_3.csv"), mode='a', newline=''),
-        "can0": open(os.path.join(csv_dir, "can0.csv"), mode='a', newline=''),
-        "can1": open(os.path.join(csv_dir, "can1.csv"), mode='a', newline=''),
-        "mpu": open(os.path.join(csv_dir, "mpu6050.csv"), mode='a', newline='')
+        1: open(os.path.join(current_dir, "channel_1.csv"), mode='a', newline=''),
+        2: open(os.path.join(current_dir, "channel_2.csv"), mode='a', newline=''),
+        3: open(os.path.join(current_dir, "channel_3.csv"), mode='a', newline=''),
+        "can0": open(os.path.join(current_dir, "can0.csv"), mode='a', newline=''),
+        "can1": open(os.path.join(current_dir, "can1.csv"), mode='a', newline=''),
+        "mpu": open(os.path.join(current_dir, "mpu6050.csv"), mode='a', newline='')
     }
 
     csv_writers = {
@@ -220,18 +221,55 @@ def control_relay(relay_id, action):
 @app.route('/DOWNLOAD_ZIP', methods=['GET'])
 def download_zip():
     """
-    Endpoint to zip all CSV files and allow downloading.
+    Endpoint to zip the current session's CSV files and allow downloading.
     """
-    zip_filename = os.path.join(csv_dir, "csv_data.zip")
-    
-    # Zip all CSV files in the 'csv' directory
-    zip_csv_folder(csv_dir, zip_filename)
+    session_name = request.args.get('session')
+    if not session_name:
+        return jsonify({"status": "error", "message": "Session name is required."}), 400
 
-    # Send the zip file for download
-    return send_from_directory(csv_dir, "csv_data.zip", as_attachment=True)
+    session_dir = os.path.join(csv_dir, session_name)
+    if not os.path.exists(session_dir) or not os.path.isdir(session_dir):
+        return jsonify({"status": "error", "message": "Session does not exist."}), 404
+
+    zip_filename = os.path.join(session_dir, f"{session_name}.zip")
+    zip_csv_folder(session_dir, zip_filename)
+
+    return send_from_directory(session_dir, os.path.basename(zip_filename), as_attachment=True)
+
+@app.route('/SESSIONS', methods=['GET'])
+def list_sessions():
+    """
+    Endpoint to list all available sessions.
+    """
+    sessions = []
+    for folder in os.listdir(csv_dir):
+        folder_path = os.path.join(csv_dir, folder)
+        if os.path.isdir(folder_path):
+            sessions.append(folder)
+    return jsonify({"sessions": sessions})
+
+@app.route('/DELETE_ALL', methods=['GET'])
+def delete_all_sessions():
+    """
+    Endpoint to delete all session directories.
+    """
+    try:
+        for session in os.listdir(csv_dir):
+            session_path = os.path.join(csv_dir, session)
+            if os.path.isdir(session_path):
+                for root, dirs, files in os.walk(session_path, topdown=False):
+                    for file in files:
+                        os.remove(os.path.join(root, file))
+                    for dir in dirs:
+                        os.rmdir(os.path.join(root, dir))
+                os.rmdir(session_path)
+        return jsonify({"status": "success", "message": "All sessions have been deleted."}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/')
 def index():
+    sessions = [folder for folder in os.listdir(csv_dir) if os.path.isdir(os.path.join(csv_dir, folder))]
     html = """
     <!DOCTYPE html>
     <html lang="en">
@@ -284,9 +322,17 @@ def index():
                 <button class="on" onclick="sendRequest('RELAY3_ON')">Turn ON</button>
                 <button class="off" onclick="sendRequest('RELAY3_OFF')">Turn OFF</button>
             </div>
-            <button class"on" onclick="downloadZip()">Download CSV Data as ZIP</button>
+            <h1>Available Sessions</h1>
+            <ul>
+                {% for session in sessions %}
+                    <li>
+                        {{ session }}
+                        <a href="/DOWNLOAD_ZIP?session={{ session }}">Download ZIP</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button onclick="sendRequest('DELETE_ALL')">Delete All Sessions</button>
         </div>
-        
         <script>
             function sendRequest(endpoint) {
                 fetch(`/${endpoint}`)
@@ -294,27 +340,26 @@ def index():
                     .then(data => alert(data.message))
                     .catch(error => alert('Error: ' + error.message));
             }
-            function downloadZip() {
-                window.location.href = '/DOWNLOAD_ZIP';
-            }
         </script>
     </body>
     </html>
     """
-    return render_template_string(html)
+    return render_template_string(html, sessions=sessions)
 
 @app.route('/START', methods=['GET'])
 def start_collecting():
-    """
-    Endpoint to start data collection and recording video.
-    """
-    global collecting_data, picam2, encoder
+    global collecting_data, picam2, encoder, current_dir
 
     if not collecting_data:
         collecting_data = True
 
+        # Create a new folder with a timestamp
+        timestamp = time.strftime('%Y%m%d_%H%M%S')
+        current_dir = os.path.join(csv_dir, f"session_{timestamp}")
+        os.makedirs(current_dir, exist_ok=True)
+
         # Start data collection in a separate thread
-        thread = Thread(target=collect_data)
+        thread = Thread(target=collect_data, args=(current_dir,))
         thread.start()
 
         # Initialize Picamera2
@@ -325,22 +370,22 @@ def start_collecting():
             encoder = H264Encoder(10000000)
 
         # Start recording
-        video_filename = f"video_{time.strftime('%Y%m%d_%H%M%S')}.h264"
-        picam2.start_recording(encoder, os.path.join(csv_dir, video_filename))
+        video_filename = f"video_{timestamp}.h264"
+        picam2.start_recording(encoder, os.path.join(current_dir, video_filename))
+
         return jsonify({
             "status": "success",
             "message": "Started collecting data and recording video.",
             "video_file": video_filename,
-            "collecting_data": collecting_data
+            "collecting_data": collecting_data,
+            "directory": current_dir
         }), 200
-
     else:
         return jsonify({
             "status": "error",
             "message": "Data collection is already running.",
             "collecting_data": collecting_data
         }), 400
-
 
 @app.route('/STOP', methods=['GET'])
 def stop_collecting():
