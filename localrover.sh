@@ -110,7 +110,6 @@ fi
 if [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
   info "Enabling Power Monitor HAT"
   ( set -x
-    sudo apt install -y python3-pip
     sudo pip3 install --break-system-packages adafruit-circuitpython-ina219
   ) || die "Enabling Power Monitor HAT failed"
 fi

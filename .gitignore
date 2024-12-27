@@ -4,3 +4,6 @@ kernel*
 boot
 root
 local_env
+__pycache__/
+*.pyc
+*.pyo
