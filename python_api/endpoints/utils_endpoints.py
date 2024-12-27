@@ -24,17 +24,3 @@ def export_log():
     The folder path is provided in the JSON payload with key 'folder'.
     """
     return utils_module.export_log()
-
-@bp.route('/ENDPOINTS', methods=['GET'])
-def list_endpoints():
-    """
-    Lists all available endpoints with their methods.
-    """
-    endpoints = []
-    for rule in app.url_map.iter_rules():
-        endpoints.append({
-            "endpoint": rule.endpoint,
-            "url": str(rule),
-            "methods": list(rule.methods)
-        })
-    return jsonify({"status": "success", "endpoints": endpoints}), 200
