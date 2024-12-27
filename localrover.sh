@@ -154,10 +154,17 @@ if [[ "x${RUN_EXTRA}" == "x1" ]]; then
   ) || die "Extra commands failed"
 fi
 
-if [[ "x${RUN_NETWORK}" == "x1" ]] && [[ "x${NETDNS}" != "x" ]]; then
+if [[ "x${RUN_ETH}" == "x1" ]] && [[ "x${NETDNS}" != "x" ]]; then
   info "Setting up target DNS settings"
   ( set -x
   echo nameserver $NETDNS | sudo tee /etc/resolv.conf
+  ) || die "Setting up DNS failed"
+fi
+
+if [[ "x${RUN_WLAN}" == "x1" ]] && [[ "x${WLAN_NETDNS}" != "x" ]]; then
+  info "Setting up target DNS settings"
+  ( set -x
+  echo nameserver $WLAN_NETDNS | sudo tee /etc/resolv.conf
   ) || die "Setting up DNS failed"
 fi
 
