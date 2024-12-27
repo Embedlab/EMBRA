@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import modules.can_module as can_module
 
 bp = Blueprint('can', __name__, url_prefix='/CAN')
@@ -37,4 +37,8 @@ def can_shutdown():
     Shuts down the specified CAN interface(s).
     """
     return can_module.can_shutdown(request)
+
+@bp.route('/')
+def can_ui():
+    return send_from_directory('static/CAN', 'can.html')
     

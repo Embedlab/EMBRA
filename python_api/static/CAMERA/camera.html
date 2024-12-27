@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera</title>
+    <link rel="stylesheet" href="../static/CAMERA/camera_styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Camera Control</h1>
+
+        <div class="row">
+            <!-- Camera Status Section -->
+            <div class="section">
+                <h2>Camera Status</h2>
+                <button id="check-camera-status-btn" class="btn">Check Camera Status</button>
+                <div id="camera-status-container"></div>
+            </div>
+
+            <!-- Start Recording Section -->
+            <div class="section">
+                <h2>Start Recording</h2>
+                <button id="start-recording-btn" class="btn">Start Recording</button>
+                <div id="start-recording-response"></div>
+
+            <!-- Stop Recording Section -->
+
+                <h2>Stop Recording</h2>
+                <button id="stop-recording-btn" class="btn">Stop Recording</button>
+                <div id="stop-recording-response"></div>
+            </div>
+
+            <div class="section">
+                <h2>Capture Photo</h2>
+                <button id="capture-photo-btn">Capture Photo</button>
+                <div id="capture-photo-response"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/CAMERA/camera.js"></script>
+</body>
+</html>

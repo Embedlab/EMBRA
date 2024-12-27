@@ -234,5 +234,7 @@ def ina219_shutdown(request):
         ina2 = None
     elif channel == "3":
         ina3 = None
+    
+    adc_states[channel] = "OFF"
 
     return jsonify({"status": "success", "message": f"INA219 channel {channel} deinitialized and shutdown."}), 200

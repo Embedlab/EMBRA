@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPU6050</title>
+    <link rel="stylesheet" href="../static/MPU6050/mpu_styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">MPU6050</h1>
+
+        <div class="row">
+            <div class="section">
+                <h2>Initialize MPU6050 Sensor</h2>
+                <button id="initialize-btn">Initialize MPU6050</button>            
+                <div id="initialize-response-container"></div>
+            </div>
+
+            <div class="section">
+                <h2>Check MPU6050 Status</h2>
+                <button id="check-status-btn">Check Status</button>
+                <div id="status-container"></div>            
+            </div>
+
+            <div class="section">
+                <h2>Read Sensor Data</h2>
+                <button id="read-data-btn">Read Data</button>
+            
+                <div id="data-container"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="section">
+                <h2>MPU6050 Logging</h2>
+                <form id="mpu-log-form">
+                    <label for="log-action">Działanie:</label>
+                    <select id="log-action">
+                        <option value="start">Start</option>
+                        <option value="stop">Stop</option>
+                    </select><br><br>
+        
+                    <button type="submit" class="btn">Execute Action</button>
+                </form>
+        
+                <div id="log-response-container"></div>
+            </div>
+            <div class="section">
+                <h2>MPU6050 Shutdown</h2>
+                <form id="mpu-shutdown-form">
+                    <button type="submit" class="btn">Shutdown MPU6050</button>
+                </form>
+
+                <div id="shutdown-response-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/MPU6050/mpu.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAN Bus Initializer</title>
+    <link rel="stylesheet" href="../static/CAN/can_styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">CAN Bus Manager</h1>
+
+        <div class="row">
+            <!-- Initialize Section -->
+            <div class="section">
+                <h2>Initialize CAN Bus</h2>
+                <label for="interface">Wybierz interfejs CAN:</label>
+                <select id="interface">
+                    <option value="can0">CAN0</option>
+                    <option value="can1">CAN1</option>
+                </select>
+                <button id="initialize-btn" class="btn">Initialize</button>
+                <div id="response-container"></div>
+            </div>
+
+            <!-- Status Section -->
+            <div class="section">
+                <h2>CAN Bus Status</h2>
+                <button id="check-status-btn" class="btn">Check Status</button>
+                <div id="status-container"></div>
+            </div>
+
+            <!-- Send CAN Message Section -->
+            <div class="section">
+                <h2>Send CAN Message</h2>
+                <form id="can-send-form">
+                    <label for="interface">Wybierz interfejs CAN:</label>
+                    <select id="interface">
+                        <option value="can0">CAN0</option>
+                        <option value="can1">CAN1</option>
+                    </select><br><br>
+
+                    <label for="id">ID wiadomości (0-2047):</label>
+                    <input type="number" id="id" min="0" max="2047"><br><br>
+
+                    <label for="data">Dane wiadomości (np. [255, 0, 0, 255]):</label>
+                    <input type="text" id="data" placeholder="[255, 0, 0, 255]"><br><br>
+
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+                <div id="send-response-container"></div>
+            </div>
+             <!-- CAN Logging Section -->
+             <div class="section">
+                <h2>CAN Logging</h2>
+                <form id="can-log-form">
+                    <label for="log-interface">Wybierz interfejs CAN:</label>
+                    <select id="log-interface">
+                        <option value="can0">CAN0</option>
+                        <option value="can1">CAN1</option>
+                    </select><br><br>
+
+                    <label for="action">Działanie:</label>
+                    <select id="action">
+                        <option value="start">Start</option>
+                        <option value="stop">Stop</option>
+                    </select><br><br>
+
+                    <button type="submit" class="btn">Execute Action</button>
+                </form>
+                <div id="log-response-container"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Shutdown CAN Section -->
+            <div class="section">
+                <h2>Shutdown CAN Interface(s)</h2>
+                <form id="can-shutdown-form">
+                    <label for="shutdown-interfaces">Wybierz interfejsy do wyłączenia:</label><br>
+                    <input type="checkbox" id="can0" value="can0"> CAN0<br>
+                    <input type="checkbox" id="can1" value="can1"> CAN1<br><br>
+
+                    <button type="submit" class="btn">Shutdown Interfaces</button>
+                </form>
+                <div id="shutdown-response-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/CAN/can.js"></script>
+</body>
+</html>

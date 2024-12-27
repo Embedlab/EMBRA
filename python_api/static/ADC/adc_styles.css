@@ -1,0 +1,120 @@
+/* Basic Layout */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1200px;
+}
+
+h1.title {
+    text-align: center;
+    color: #333;
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+/* Section Styling */
+.section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 45%;
+    box-sizing: border-box;
+}
+
+h2 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+/* Row for arranging sections side by side */
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+/* Form Fields */
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+select, input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button.btn:hover {
+    background-color: #45a049;
+}
+
+/* Response Containers */
+#response-container,
+#status-container,
+#send-response-container,
+#log-response-container,
+#shutdown-response-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Success/Failure Colors */
+#send-response-container p.success,
+#log-response-container p.success,
+#shutdown-response-container p.success {
+    color: green;
+}
+
+#send-response-container p.error,
+#log-response-container p.error,
+#shutdown-response-container p.error {
+    color: red;
+}
+
+/* Hover and Focus effects */
+select:focus, input:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+button.btn:focus {
+    outline: none;
+}

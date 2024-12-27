@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import modules.mpu6050_module as mpu6050_module
 
 bp = Blueprint('mpu6050', __name__, url_prefix='/MPU6050')
@@ -37,4 +37,8 @@ def mpu6050_shutdown():
     Shutdown the MPU6050 sensor.
     """
     return mpu6050_module.mpu6050_shutdown()
+
+@bp.route('/')
+def mpu_ui():
+    return send_from_directory('static/MPU6050', 'mpu.html')
     

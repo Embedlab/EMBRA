@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import modules.ina219_module as ina219_module
 
 bp = Blueprint('adc', __name__, url_prefix='/ADC')
@@ -37,4 +37,8 @@ def adc_shutdown():
     Shutdown the ADC sensor.
     """
     return ina219_module.ina219_shutdown(request)
+
+@bp.route('/')
+def adc_ui():
+    return send_from_directory("static/ADC", "adc.html")
     

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import modules.camera_module as camera_module
 
 bp = Blueprint('camera', __name__, url_prefix='/CAMERA')
@@ -30,4 +30,8 @@ def capture_photo():
     Captures a photo using the camera and saves it to the specified directory.
     """
     return camera_module.capture_photo()
+
+@bp.route('/')
+def camera_ui():
+    return send_from_directory('static/CAMERA', 'camera.html')
     

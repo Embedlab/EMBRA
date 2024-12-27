@@ -1,7 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from endpoints import can_endpoints, relay_endpoints, mpu6050_endpoints, adc_endpoints, camera_endpoints, logging_endpoints, utils_endpoints
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 app.register_blueprint(can_endpoints.bp)
 app.register_blueprint(relay_endpoints.bp)
@@ -24,6 +24,10 @@ def list_endpoints():
             "methods": list(rule.methods)
         })
     return jsonify({"status": "success", "endpoints": endpoints}), 200
+
+@app.route('/')
+def ui():
+    return send_from_directory('static', 'index.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

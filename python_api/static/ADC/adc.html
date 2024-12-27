@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADC</title>
+    <link rel="stylesheet" href="../static/ADC/adc_styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Analog to digital converter</h1>
+
+        <div class="row">
+            <!-- ADC Initialization Section -->
+            <div class="section">
+                <h2>Initialize ADC Sensor</h2>
+                <form id="adc-initialize-form">
+                    <label for="channel">Wybierz kanał ADC:</label>
+                    <select id="channel">
+                        <option value="1">Kanał 1</option>
+                        <option value="2">Kanał 2</option>
+                        <option value="3">Kanał 3</option>
+                    </select><br><br>
+
+                    <button type="submit">Initialize</button>
+                </form>
+                <div id="initialize-response-container"></div>
+            </div>
+
+            <div class="section">
+                <h2>Check ADC Status</h2>
+                <button id="check-status-btn">Check Status</button>
+                <div id="status-container"></div>
+            </div>
+
+            <div class="section">
+                <h2>Read ADC Data</h2>
+                <button id="read-data-btn">Read Data</button>
+                <div id="data-container"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="section">
+                <h2>Start/Stop ADC Logging</h2>
+                <form id="adc-log-form">
+                    <label for="log-channel">Select ADC Channel:</label>
+                    <select id="log-channel">
+                        <option value="1">Channel 1</option>
+                        <option value="2">Channel 2</option>
+                        <option value="3">Channel 3</option>
+                    </select><br><br>
+    
+                    <label for="log-action">Action:</label>
+                    <select id="log-action">
+                        <option value="start">Start</option>
+                        <option value="stop">Stop</option>
+                    </select><br><br>
+    
+                    <button type="submit">Submit</button>
+                </form>
+    
+                <div id="log-response-container"></div>
+            </div>
+            <div class="section">
+                <h2>Shutdown ADC Sensor</h2>
+                <form id="adc-shutdown-form">
+                    <label for="shutdown-channel">Select ADC Channel:</label>
+                    <select id="shutdown-channel">
+                        <option value="1">Channel 1</option>
+                        <option value="2">Channel 2</option>
+                        <option value="3">Channel 3</option>
+                    </select><br><br>
+
+                    <button type="submit">Shutdown</button>
+                </form>
+
+                <div id="shutdown-response-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/ADC/adc.js"></script>
+</body>
+</html>
