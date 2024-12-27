@@ -32,7 +32,7 @@ if [[ "x${RUN_USERSETUP}" == "x1" ]] || [[ "x${RUN_ENABLESSH}" == "x1" ]] || [[ 
   BOOT_NEEDED=1
 fi
 
-if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_WLAN}" == "x1" ]] || [[ "x${RUN_ETH}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]]; then
+if [[ "x${RUN_I2C}" == "x1" ]] || [[ "x${RUN_SSHKEYS}" == "x1" ]] || [[ "x${RUN_WLAN}" == "x1" ]] || [[ "x${RUN_ETH}" == "x1" ]] || [[ "x${RUN_HOSTNAME}" == "x1" ]] || [[ "x${RUN_CURRENT_MONITOR}" == "x1" ]] || [[ "x${RUN_API}" == "x1" ]] || [[ "x${RUN_LOGGING}" == "x1" ]]; then
   ROOTFS_NEEDED=1
 fi
 
@@ -174,7 +174,14 @@ if [[ "x${RUN_LOGGING}" == "x1" ]]; then
     cp data_logging.py root/home/pi/.data_logging.py
     cp requirements.txt root/home/pi/
     cp services/data_logging.service root/etc/systemd/system/
-  ) || die "Addinglogging files failed"
+  ) || die "Adding logging files failed"
+fi
+
+if [[ "x${RUN_API}" == "x1" ]]; then
+  info "Adding API files"
+  ( set -x
+    cp -r python_api root/home/pi/.python_api
+  ) || die "Adding API files failed"
 fi
 
 if [[ "x${RUN_I2C}" == "x1" ]]; then
