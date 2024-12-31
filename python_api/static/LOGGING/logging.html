@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging control</title>
+    <link rel="stylesheet" href="../static/LOGGING/logging_styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Logging Control</h1>
+        <div class="row">
+            <div class="section">
+                <h2>Logging Status</h2>
+                <button id="status-btn" class="btn">Get Logging Status</button>
+                <div id="status-response"></div>
+            </div>
+    
+            <div class="section">
+                <h2>Start Logging</h2>
+                <form id="start-logging-form">
+                    <label><input type="checkbox" id="camera" name="camera"> Camera</label><br>
+                    <label><input type="checkbox" id="adc1" name="adc1"> ADC1</label><br>
+                    <label><input type="checkbox" id="adc2" name="adc2"> ADC2</label><br>
+                    <label><input type="checkbox" id="adc3" name="adc3"> ADC3</label><br>
+                    <label><input type="checkbox" id="mpu6050" name="mpu6050"> MPU6050</label><br>
+                    <label><input type="checkbox" id="can0" name="can0"> CAN0</label><br>
+                    <label><input type="checkbox" id="can1" name="can1"> CAN1</label><br><br>
+                    <button type="submit" class="btn">Start Logging</button>
+                </form>
+                <div id="start-logging-response"></div>
+            </div>
+            <div class="section">
+                <h2>Stop Logging</h2>
+                <button id="stop-logging" class="btn">Stop Logging</button>
+                <div id="stop-logging-response"></div>
+                </form>
+                <div id="start-logging-response"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="section">
+                <h2>Session Management</h2>
+                <button id="get-sessions" class="btn">Get Sessions</button>
+                <div id="sessions-response"></div>
+                <button id="delete-sessions" class="btn">Delete All Sessions</button>
+                <div id="delete-sessions-response"></div>
+            </div>
+    
+            <div class="section">
+                <h2>Export Logs</h2>
+                <form id="export-logs-form">
+                    <label for="folder-name">Folder Name:</label>
+                    <input type="text" id="folder-name" name="folder" placeholder="Enter folder name">
+                    <button type="submit" class="btn">Export Logs</button>
+                </form>
+                <div id="export-logs-response"></div>
+            </div>
+        </div>
+    </div>
+    <script src="../static/LOGGING/logging.js"></script>
+</body>
+</html>

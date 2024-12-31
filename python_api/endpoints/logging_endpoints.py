@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import modules.logging_module as logging_module
 
 bp = Blueprint('logging', __name__, url_prefix='/LOGGING')
@@ -23,4 +23,8 @@ def stop_logging():
     Stops logging data.
     """
     return logging_module.stop_logging()
+
+@bp.route('/')
+def logging_ui():
+    return send_from_directory('static/LOGGING', 'logging.html')
     
